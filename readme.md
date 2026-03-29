@@ -11,8 +11,8 @@ Server-side weather widget for Notion or any iframe host.
 
 | Route | Description |
 |---|---|
-| `/` | Redirects to `/london` |
-| `/:city` | Weather by city, e.g. `/paris` |
+| `/` | Redirects to `/city/london` |
+| `/city/:city` | Weather by city, e.g. `/city/paris` |
 | `/coordinates/:lat/:lon` | Weather by coordinates, e.g. `/coordinates/50.447/5.962` |
 
 ### Query params
@@ -24,8 +24,8 @@ Server-side weather widget for Notion or any iframe host.
 
 Examples:
 
-- `/london?units=imperial`
-- `/london?date=2026-04-01`
+- `/city/london?units=imperial`
+- `/city/london?date=2026-04-01`
 
 ## Date resolution behavior
 

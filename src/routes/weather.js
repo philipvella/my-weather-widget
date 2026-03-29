@@ -10,7 +10,7 @@ const weatherResolutionService = createWeatherResolutionService({
   parseDateQuery,
 });
 
-// GET /coordinates/:lat/:lon  — must be defined BEFORE /:city
+// GET /coordinates/:lat/:lon  — must be defined BEFORE /city/:city
 router.get('/coordinates/:lat/:lon', async (req, res) => {
   const { lat, lon } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';
@@ -32,8 +32,8 @@ router.get('/coordinates/:lat/:lon', async (req, res) => {
   }
 });
 
-// GET /:city
-router.get('/:city', async (req, res) => {
+// GET /city/:city
+router.get('/city/:city', async (req, res) => {
   const { city } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';
   const dateQuery = typeof req.query.date === 'string' ? req.query.date : null;
