@@ -73,6 +73,11 @@
           <img
             src="https://openweathermap.org/img/wn/<%= icon %>@2x.png"
             alt="<%= description %>"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            width="80"
+            height="80"
             class="drop-shadow-lg w-20 h-20 sm:w-28 sm:h-28 landscape:w-10 landscape:h-10"
           />
         </label>
