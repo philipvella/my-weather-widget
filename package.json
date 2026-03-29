@@ -7,9 +7,10 @@
   },
   "scripts": {
     "prepare": "husky",
-    "build": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
+    "build": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify && node scripts/generate-favicon.cjs",
+    "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
-    "dev": "npm run build && nodemon api/index.js",
+    "dev": "node scripts/generate-favicon.cjs && npm run build:css && concurrently --kill-others \"npm run dev:css\" \"nodemon api/index.js\"",
     "start": "node api/index.js",
     "start:test": "PORT=4173 node api/index.js",
     "format": "prettier . --write",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@lhci/cli": "^0.14.0",
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "nodemon": "^3.1.0",

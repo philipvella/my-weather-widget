@@ -87,6 +87,8 @@ npm run dev
 
 App URL: `http://localhost:3000`
 
+`npm run dev` generates the favicon once, does an initial CSS build, then runs the Tailwind CSS watcher and nodemon in parallel so both stylesheet and server changes are picked up automatically.
+
 If Upstash Redis env vars are missing locally, the app automatically uses in-process cache.
 Current weather, single-date forecasts, and date-range forecasts all use cache keys (location + units + date inputs).
 
