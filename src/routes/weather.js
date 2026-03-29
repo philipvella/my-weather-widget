@@ -81,7 +81,7 @@ async function resolveWeatherByCity(city, units, dateQuery) {
   return {
     data,
     selectedDate: parsedDate.dateQuery,
-    infoMessage: 'No forecast is available for that date yet. Showing live weather instead.',
+    infoMessage: 'No forecast yet. Showing live weather.',
   };
 }
 
@@ -120,7 +120,7 @@ async function resolveWeatherByCoordinates(lat, lon, units, dateQuery) {
   return {
     data,
     selectedDate: parsedDate.dateQuery,
-    infoMessage: 'No forecast is available for that date yet. Showing live weather instead.',
+    infoMessage: 'No forecast yet. Showing live weather.',
   };
 }
 
