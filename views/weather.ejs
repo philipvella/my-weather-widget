@@ -90,9 +90,10 @@
       </header>
 
       <!-- Icon + temperature -->
+      <% const hideTempForWideShortRange = Array.isArray(rangeItems) && rangeItems.length > 1; %>
       <section
         aria-label="Current temperature"
-        class="flex flex-col items-center mb-2 landscape:mb-0 landscape:flex-row landscape:items-center landscape:gap-1 landscape:flex-1 landscape:min-w-0"
+        class="flex flex-col items-center mb-2 landscape:mb-0 landscape:flex-row landscape:items-center landscape:gap-1 landscape:flex-1 landscape:min-w-0 <%= hideTempForWideShortRange ? 'md:landscape:hidden' : '' %>"
       >
         <div class="relative flex-shrink-0">
           <input id="weather-icon-tooltip-toggle" type="checkbox" class="peer sr-only" />
