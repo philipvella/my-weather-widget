@@ -6,7 +6,10 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "dev": "nodemon api/index.js",
+    "build": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
+    "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
+    "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
+    "dev": "npm run build:css && nodemon api/index.js",
     "start": "node api/index.js",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -23,6 +26,7 @@
   "devDependencies": {
     "nodemon": "^3.1.0",
     "supertest": "^7.1.1",
+    "tailwindcss": "^3.4.19",
     "vitest": "^3.2.4"
   }
 }
