@@ -7,22 +7,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="m-0 bg-gradient-to-br <%= bgGradient %> min-h-screen overflow-y-auto">
-  <% if (githubRepoUrl) { %>
+  <div class="fixed bottom-1 right-1 z-20 flex items-center gap-1">
+    <% if (githubRepoUrl) { %>
+      <a
+        href="<%= githubRepoUrl %>"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
+        aria-label="Open GitHub repository"
+      ><%- include('partials/icons/github', { className: 'w-3.5 h-3.5' }) %></a>
+    <% } %>
     <a
-      href="<%= githubRepoUrl %>"
+      href=""
       target="_blank"
       rel="noopener noreferrer"
-      class="fixed bottom-1 right-1 z-20 rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
-      aria-label="Open GitHub repository"
-    ><%- include('partials/icons/github', { className: 'w-3.5 h-3.5' }) %></a>
-  <% } %>
-  <a
-    href=""
-    target="_blank"
-    rel="noopener noreferrer"
-    class="block min-h-screen no-underline text-inherit"
-    aria-label="Open weather in a new window"
-  >
+      class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
+      aria-label="Open weather in a new window"
+    ><%- include('partials/icons/open-in-new', { className: 'w-3.5 h-3.5' }) %></a>
+  </div>
   <main
     role="main"
     class="min-h-screen flex flex-col items-center justify-start p-3 sm:p-6 gap-2 <%= textColor %> landscape:flex-row landscape:items-center landscape:justify-between landscape:gap-1 landscape:py-1 landscape:px-2 landscape:overflow-x-auto"
@@ -103,7 +105,6 @@
     </section>
 
   </main>
-  </a>
 </body>
 </html>
 
