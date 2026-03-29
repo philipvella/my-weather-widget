@@ -9,21 +9,31 @@
 <body class="m-0 bg-gradient-to-br <%= bgGradient %> min-h-screen overflow-y-auto">
   <div class="fixed bottom-1 right-1 z-20 flex items-center gap-1">
     <% if (githubRepoUrl) { %>
+      <div class="relative group">
+        <a
+          href="<%= githubRepoUrl %>"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35 flex items-center"
+          aria-label="Open GitHub repository"
+        ><%- include('partials/icons/github', { className: 'w-3.5 h-3.5' }) %></a>
+        <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+          GitHub repo
+        </span>
+      </div>
+    <% } %>
+    <div class="relative group">
       <a
-        href="<%= githubRepoUrl %>"
+        href=""
         target="_blank"
         rel="noopener noreferrer"
-        class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
-        aria-label="Open GitHub repository"
-      ><%- include('partials/icons/github', { className: 'w-3.5 h-3.5' }) %></a>
-    <% } %>
-    <a
-      href=""
-      target="_blank"
-      rel="noopener noreferrer"
-      class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
-      aria-label="Open weather in a new window"
-    ><%- include('partials/icons/open-in-new', { className: 'w-3.5 h-3.5' }) %></a>
+        class="rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35 flex items-center"
+        aria-label="Open weather in a new window"
+      ><%- include('partials/icons/open-in-new', { className: 'w-3.5 h-3.5' }) %></a>
+      <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        Open in new tab
+      </span>
+    </div>
   </div>
   <main
     role="main"
