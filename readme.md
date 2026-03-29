@@ -1,9 +1,5 @@
 # Weather widget server side rendered
 
-## Description 350 characters
-
-This project is a weather widget that is server side rendered and can be embedded in Notion. It fetches the current weather data from the OpenWeather API and displays it in a clean and modern design using TailwindCSS. The widget is responsive and works on different screen sizes, and it also has a loading state and an error state. The widget is designed to be accessible and follows best practices for web accessibility.
-
 ## Description
 
 This project is a weather widget that is server side rendered and can be embedded in Notion. It fetches the current weather data from the OpenWeather API and displays it in a clean and modern design using TailwindCSS. The widget is responsive and works on different screen sizes, and it also has a loading state and an error state. The widget is designed to be accessible and follows best practices for web accessibility.
