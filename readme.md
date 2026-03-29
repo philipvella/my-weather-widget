@@ -10,7 +10,7 @@ This project is a weather widget that is server side rendered and can be embedde
 - Runs on vercel
 - Runs on serverside and not client side
 - Has to be run on a server with HTTPS enabled (because of the API we use)
-- API key for [OpenWeather](https://openweathermap.org/api) - OPENWEATHERMAP_API_KEY
+- API key for [OpenWeather](https://openweathermap.org/api) - `OPENWEATHERMAP_API_KEY`
 - We need to cache the API response for 10 minutes to avoid hitting the API limits, so we need a way to store that cache on the server, we can use something like [node-cache](https://www.npmjs.com/package/node-cache) for that.
 - We need to rate limit the API calls to avoid hitting the API limits, we can use something like [express-rate-limit](https://www.npmjs.com/package/express-rate-limit) for that.
 - We need to handle errors gracefully, if the API call fails we should return a default response with a message like "Unable to fetch weather data" and a default icon.
