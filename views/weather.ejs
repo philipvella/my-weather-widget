@@ -7,6 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="m-0 bg-gradient-to-br <%= bgGradient %> min-h-screen overflow-y-auto">
+  <% if (githubRepoUrl) { %>
+    <a
+      href="<%= githubRepoUrl %>"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed top-2 right-2 z-20 rounded-full bg-black/25 border border-white/30 px-3 py-1 text-xs sm:text-sm text-white/95 no-underline hover:bg-black/35"
+      aria-label="Open GitHub repository"
+    >
+      View on GitHub
+    </a>
+  <% } %>
   <a
     href=""
     target="_blank"

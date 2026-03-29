@@ -42,6 +42,7 @@ function buildViewData(data, units, extras = {}) {
     selectedDateLabel: extras.selectedDate ? formatDateLabel(extras.selectedDate) : null,
     infoMessage:   extras.infoMessage || null,
     forecastMode:  Boolean(extras.selectedDate),
+    githubRepoUrl: process.env.GITHUB_REPO_URL || null,
   };
 }
 

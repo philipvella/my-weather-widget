@@ -51,6 +51,7 @@ Example with date: `/london?date=2026-04-01`
 | Variable | Required | Description |
 |---|---|---|
 | `OPENWEATHERMAP_API_KEY` | ✅ | Free API key from openweathermap.org |
+| `GITHUB_REPO_URL` | optional | If set, shows a "View on GitHub" badge in the widget |
 | `UPSTASH_REDIS_REST_URL` | ✅ (production) | Set automatically by Vercel Marketplace integration |
 | `UPSTASH_REDIS_REST_TOKEN` | ✅ (production) | Set automatically by Vercel Marketplace integration |
 
@@ -116,6 +117,7 @@ Example URL: `https://your-deployment.vercel.app/london`
 - Background gradient changes with weather condition (sunny → amber/sky, rainy → blue/slate, snow → light blue, storm → purple/dark, clouds → slate, fog → grey)
 - Displays: temperature, "feels like", weather description, icon (OpenWeatherMap CDN), humidity, wind speed, precipitation chance, precipitation amount
 - Precipitation chance is shown when available from forecast data; live weather may show `--` when the API does not provide probability
+- Optional "View on GitHub" badge appears when `GITHUB_REPO_URL` is configured
 - Fully responsive; works at any iframe size
 - Accessible semantic HTML with ARIA labels and alt text
 - Error state shown when the city is not found or the API is unreachable
