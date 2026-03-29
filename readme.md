@@ -23,9 +23,9 @@ A server-side rendered weather widget that can be embedded directly in Notion (o
 
 | URL | Description |
 |---|---|
-| `/` | Redirects to `/weather/london` |
-| `/weather/:city` | Weather by city name (e.g. `/weather/paris`) |
-| `/weather/coordinate/:lat/:lon` | Weather by coordinates (e.g. `/weather/coordinate/50.447/5.962`) |
+| `/` | Redirects to `/london` |
+| `/:city` | Weather by city name (e.g. `/paris`) |
+| `/coordinates/:lat/:lon` | Weather by coordinates (e.g. `/coordinates/50.447/5.962`) |
 
 ### Query parameters
 
@@ -34,9 +34,9 @@ A server-side rendered weather widget that can be embedded directly in Notion (o
 | `units` | `metric` (°C, m/s) \| `imperial` (°F, mph) | `metric` |
 | `date` | `YYYY-MM-DD` (forecast date) | none |
 
-Example: `/weather/london?units=imperial`
+Example: `/london?units=imperial`
 
-Example with date: `/weather/london?date=2026-04-01`
+Example with date: `/london?date=2026-04-01`
 
 ### Date behavior
 
@@ -107,7 +107,7 @@ App will be available at `http://localhost:3000`.
 
 Paste any widget URL into a Notion page → select **Embed**. The widget sets `Content-Security-Policy: frame-ancestors *` so Notion can iframe it without restriction.
 
-Example URL: `https://your-deployment.vercel.app/weather/london`
+Example URL: `https://your-deployment.vercel.app/london`
 
 ---
 

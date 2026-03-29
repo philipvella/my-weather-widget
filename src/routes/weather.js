@@ -110,8 +110,8 @@ async function resolveWeatherByCoordinates(lat, lon, units, dateQuery) {
   };
 }
 
-// GET /weather/coordinate/:lat/:lon  — must be defined BEFORE /:city
-router.get('/coordinate/:lat/:lon', async (req, res) => {
+// GET /coordinates/:lat/:lon  — must be defined BEFORE /:city
+router.get('/coordinates/:lat/:lon', async (req, res) => {
   const { lat, lon } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';
   const dateQuery = typeof req.query.date === 'string' ? req.query.date : null;
@@ -131,7 +131,7 @@ router.get('/coordinate/:lat/:lon', async (req, res) => {
   }
 });
 
-// GET /weather/:city
+// GET /:city
 router.get('/:city', async (req, res) => {
   const { city } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';

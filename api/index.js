@@ -33,8 +33,8 @@ app.use((req, res, next) => {
 });
 
 // ── Routes ─────────────────────────────────────────────────────────────────────
-app.get('/', (req, res) => res.redirect('/weather/london'));
-app.use('/weather', weatherRouter);
+app.get('/', (req, res) => res.redirect('/london'));
+app.use('/', weatherRouter);
 
 // ── 404 ────────────────────────────────────────────────────────────────────────
 app.use((req, res) => {
