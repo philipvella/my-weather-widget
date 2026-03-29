@@ -12,9 +12,9 @@
       href="<%= githubRepoUrl %>"
       target="_blank"
       rel="noopener noreferrer"
-      class="fixed bottom-1 right-1 z-20 rounded-full bg-black/25 border border-white/30 px-2 py-0.5 text-xs text-white/95 no-underline hover:bg-black/35"
+      class="fixed bottom-1 right-1 z-20 rounded-full bg-black/25 border border-white/30 p-1.5 text-white/95 no-underline hover:bg-black/35"
       aria-label="Open GitHub repository"
-    >View on GitHub</a>
+    ><%- include('partials/icons/github', { className: 'w-3.5 h-3.5' }) %></a>
   <% } %>
   <a
     href=""
