@@ -1,11 +1,13 @@
 const axios = require('axios');
 const cacheService = require('./cacheService');
 
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
-const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
-const CACHE_TTL = 600; // 10 minutes
+const API_ENDPOINTS = {
+  current: 'https://api.openweathermap.org/data/2.5/weather',
+  forecast: 'https://api.openweathermap.org/data/2.5/forecast',
+};
+const CACHE_TTL_SECONDS = 600;
 
-function apiKey() {
+function getApiKey() {
   const key = process.env.OPENWEATHERMAP_API_KEY;
   if (!key) throw Object.assign(new Error('OPENWEATHERMAP_API_KEY is not set'), { status: 500 });
   return key;
@@ -22,38 +24,37 @@ function normaliseError(err, label) {
   return Object.assign(new Error('Unable to fetch weather data'), { status: 502 });
 }
 
-async function getWeatherByCity(city, units = 'metric') {
-  const cacheKey = `weather:city:${city.toLowerCase()}:${units}`;
-
+async function getOrSetCache(cacheKey, fetcher) {
   const cached = await cacheService.get(cacheKey);
   if (cached) return cached;
 
+  const fresh = await fetcher();
+  await cacheService.set(cacheKey, fresh, CACHE_TTL_SECONDS);
+  return fresh;
+}
+
+async function fetchWeatherFromApi(endpoint, params, label) {
   try {
-    const { data } = await axios.get(BASE_URL, {
-      params: { q: city, appid: apiKey(), units },
+    const { data } = await axios.get(endpoint, {
+      params: {
+        ...params,
+        appid: getApiKey(),
+      },
     });
-    await cacheService.set(cacheKey, data, CACHE_TTL);
     return data;
   } catch (err) {
-    throw normaliseError(err, city);
+    throw normaliseError(err, label);
   }
+}
+
+async function getWeatherByCity(city, units = 'metric') {
+  const cacheKey = `weather:city:${city.toLowerCase()}:${units}`;
+  return getOrSetCache(cacheKey, () => fetchWeatherFromApi(API_ENDPOINTS.current, { q: city, units }, city));
 }
 
 async function getWeatherByCoordinates(lat, lon, units = 'metric') {
   const cacheKey = `weather:coord:${lat}:${lon}:${units}`;
-
-  const cached = await cacheService.get(cacheKey);
-  if (cached) return cached;
-
-  try {
-    const { data } = await axios.get(BASE_URL, {
-      params: { lat, lon, appid: apiKey(), units },
-    });
-    await cacheService.set(cacheKey, data, CACHE_TTL);
-    return data;
-  } catch (err) {
-    throw normaliseError(err, `${lat}, ${lon}`);
-  }
+  return getOrSetCache(cacheKey, () => fetchWeatherFromApi(API_ENDPOINTS.current, { lat, lon, units }, `${lat}, ${lon}`));
 }
 
 function selectForecastForDate(entries, dateQuery) {
@@ -90,46 +91,22 @@ function normalizeForecastEntry(entry, cityMeta) {
 
 async function getForecastByCityAndDate(city, dateQuery, units = 'metric') {
   const cacheKey = `forecast:city:${city.toLowerCase()}:${dateQuery}:${units}`;
-
-  const cached = await cacheService.get(cacheKey);
-  if (cached) return cached;
-
-  try {
-    const { data } = await axios.get(FORECAST_URL, {
-      params: { q: city, appid: apiKey(), units },
-    });
-
+  return getOrSetCache(cacheKey, async () => {
+    const data = await fetchWeatherFromApi(API_ENDPOINTS.forecast, { q: city, units }, city);
     const selected = selectForecastForDate(data.list, dateQuery);
     if (!selected) return null;
-
-    const normalized = normalizeForecastEntry(selected, data.city);
-    await cacheService.set(cacheKey, normalized, CACHE_TTL);
-    return normalized;
-  } catch (err) {
-    throw normaliseError(err, city);
-  }
+    return normalizeForecastEntry(selected, data.city);
+  });
 }
 
 async function getForecastByCoordinatesAndDate(lat, lon, dateQuery, units = 'metric') {
   const cacheKey = `forecast:coord:${lat}:${lon}:${dateQuery}:${units}`;
-
-  const cached = await cacheService.get(cacheKey);
-  if (cached) return cached;
-
-  try {
-    const { data } = await axios.get(FORECAST_URL, {
-      params: { lat, lon, appid: apiKey(), units },
-    });
-
+  return getOrSetCache(cacheKey, async () => {
+    const data = await fetchWeatherFromApi(API_ENDPOINTS.forecast, { lat, lon, units }, `${lat}, ${lon}`);
     const selected = selectForecastForDate(data.list, dateQuery);
     if (!selected) return null;
-
-    const normalized = normalizeForecastEntry(selected, data.city);
-    await cacheService.set(cacheKey, normalized, CACHE_TTL);
-    return normalized;
-  } catch (err) {
-    throw normaliseError(err, `${lat}, ${lon}`);
-  }
+    return normalizeForecastEntry(selected, data.city);
+  });
 }
 
 module.exports = {
