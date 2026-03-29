@@ -33,7 +33,7 @@ router.get('/coordinate/:lat/:lon', async (req, res) => {
   } catch (err) {
     console.error('[route] coordinate error:', err.message);
     res.status(err.status || 500).render('error', {
-      message: err.message || 'Unable to fetch weather data',
+      message: err.message || `Unable to fetch weather data for coordinates ${lat},${lon},${units}`,
       location: `${lat}, ${lon}`,
     });
   }
@@ -50,7 +50,7 @@ router.get('/:city', async (req, res) => {
   } catch (err) {
     console.error('[route] city error:', err.message);
     res.status(err.status || 500).render('error', {
-      message: err.message || 'Unable to fetch weather data',
+      message: err.message || `Unable to fetch weather data for "${city}" with units "${units}"`,
       location: city,
     });
   }

@@ -17,6 +17,7 @@ function normaliseError(err, label) {
   if (err.response?.status === 401) {
     return Object.assign(new Error('Invalid API key'), { status: 401 });
   }
+  console.error(`[weatherService] Error fetching weather for "${label}":`, err.message);
   return Object.assign(new Error('Unable to fetch weather data'), { status: 502 });
 }
 
