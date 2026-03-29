@@ -1,123 +1,82 @@
-# Weather Widget — Server-Side Rendered
+# Weather Widget (SSR)
 
-A server-side rendered weather widget that can be embedded directly in Notion (or any iframe). Fetches live weather from the OpenWeather API, caches responses for 10 minutes via Upstash Redis, and renders a clean Tailwind-styled page on every request.
+Server-side weather widget for Notion or any iframe host.
 
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Runtime | Node.js ≥ 18 |
-| Framework | Express |
-| Templates | EJS (server-side rendered) |
-| Styling | TailwindCSS (Play CDN) |
-| Weather API | [OpenWeatherMap](https://openweathermap.org/api) |
-| Cache | Upstash Redis (via Vercel Marketplace) + in-process node-cache fallback |
-| Rate limiting | express-rate-limit |
-| Hosting | Vercel (serverless) |
-
----
+- Express + EJS + Tailwind Play CDN
+- OpenWeather current + forecast APIs
+- Upstash Redis cache with local `node-cache` fallback
+- Vercel-friendly serverless entrypoint
 
 ## Routes
 
-| URL | Description |
+| Route | Description |
 |---|---|
 | `/` | Redirects to `/london` |
-| `/:city` | Weather by city name (e.g. `/paris`) |
-| `/coordinates/:lat/:lon` | Weather by coordinates (e.g. `/coordinates/50.447/5.962`) |
+| `/:city` | Weather by city, e.g. `/paris` |
+| `/coordinates/:lat/:lon` | Weather by coordinates, e.g. `/coordinates/50.447/5.962` |
 
-### Query parameters
+### Query params
 
-| Parameter | Values | Default |
+| Param | Values | Default |
 |---|---|---|
-| `units` | `metric` (°C, m/s) \| `imperial` (°F, mph) | `metric` |
-| `date` | `YYYY-MM-DD` (forecast date) | none |
+| `units` | `metric` or `imperial` | `metric` |
+| `date` | `YYYY-MM-DD` | none |
 
-Example: `/london?units=imperial`
+Examples:
 
-Example with date: `/london?date=2026-04-01`
+- `/london?units=imperial`
+- `/london?date=2026-04-01`
 
-### Date behavior
+## Date resolution behavior
 
-- If `date` is in the future (within OpenWeather's forecast window), the widget shows forecast data for that day.
-- If `date` is in the past, the widget shows a friendly "date has passed" message and falls back to live weather.
-- If `date` format is invalid or forecast is unavailable for that date, the widget shows a friendly message and falls back to live weather.
+- Valid future `date` (within forecast window): shows forecast.
+- Past `date`: falls back to current weather + message.
+- Invalid `date`: falls back to current weather + message.
+- No forecast for requested date: falls back to current weather + `Unavailable, showing live.`
 
----
+## Environment variables
 
-## Environment Variables
-
-| Variable | Required | Description |
+| Variable | Required | Notes |
 |---|---|---|
-| `OPENWEATHERMAP_API_KEY` | ✅ | Free API key from openweathermap.org |
-| `GITHUB_REPO_URL` | optional | If set, shows a "View on GitHub" badge in the widget |
-| `UPSTASH_REDIS_REST_URL` | ✅ (production) | Set automatically by Vercel Marketplace integration |
-| `UPSTASH_REDIS_REST_TOKEN` | ✅ (production) | Set automatically by Vercel Marketplace integration |
+| `OPENWEATHERMAP_API_KEY` | yes | OpenWeather API key |
+| `UPSTASH_REDIS_REST_URL` | prod yes | Added by Vercel Upstash integration |
+| `UPSTASH_REDIS_REST_TOKEN` | prod yes | Added by Vercel Upstash integration |
+| `GITHUB_REPO_URL` | optional | Shows GitHub icon badge (bottom-right) |
 
-Copy `.env.example` → `.env.local` and fill in your values for local development.
+Copy `.env.example` to `.env.local` for local development.
 
----
+## Local run
 
-## Deploying to Vercel
-
-### 1. Install the Vercel CLI (if you haven't already)
 ```bash
-npm i -g vercel
+cp .env.example .env.local
+npm install
+npm run dev
 ```
 
-### 2. Add the Upstash Redis integration
-Go to **Vercel Dashboard → your project → Integrations → Marketplace** and search for **Upstash Redis**. Add it and create a database. Vercel will automatically inject `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` into your project.
+Optional (recommended when linked to Vercel):
 
-### 3. Add your OpenWeather API key
-In **Vercel Dashboard → Settings → Environment Variables** add:
-```
-OPENWEATHERMAP_API_KEY = <your key>
+```bash
+vercel env pull .env.local
 ```
 
-### 4. Deploy
+App runs at `http://localhost:3000`.
+
+If Upstash vars are missing locally, cache falls back to in-process `node-cache`.
+
+## Deploy (Vercel)
+
+1. Add Upstash Redis integration in Vercel Marketplace.
+2. Set `OPENWEATHERMAP_API_KEY` in project env vars.
+3. Deploy:
+
 ```bash
 vercel --prod
 ```
 
----
+## UI notes
 
-## Local Development
-
-### Pull env vars from Vercel (recommended)
-```bash
-vercel env pull .env.local
-# then add OPENWEATHERMAP_API_KEY to .env.local
-npm run dev
-```
-
-### Without Vercel KV
-If `UPSTASH_REDIS_REST_URL` is not set, the app automatically falls back to an in-process `node-cache`. Caching will work within a single process but won't survive restarts.
-
-```bash
-cp .env.example .env.local
-# Fill in OPENWEATHERMAP_API_KEY
-npm run dev
-```
-
-App will be available at `http://localhost:3000`.
-
----
-
-## Notion Embedding
-
-Paste any widget URL into a Notion page → select **Embed**. The widget sets `Content-Security-Policy: frame-ancestors *` so Notion can iframe it without restriction.
-
-Example URL: `https://your-deployment.vercel.app/london`
-
----
-
-## UI
-
-- Background gradient changes with weather condition (sunny → amber/sky, rainy → blue/slate, snow → light blue, storm → purple/dark, clouds → slate, fog → grey)
-- Displays: temperature, "feels like", weather description, icon (OpenWeatherMap CDN), humidity, wind speed, precipitation chance, precipitation amount
-- Precipitation chance is shown when available from forecast data; live weather may show `--` when the API does not provide probability
-- Optional "View on GitHub" badge appears when `GITHUB_REPO_URL` is configured
-- Fully responsive; works at any iframe size
-- Accessible semantic HTML with ARIA labels and alt text
-- Error state shown when the city is not found or the API is unreachable
+- Responsive layout optimized for very small landscape embeds.
+- Stats show text labels on larger widths and icon labels on very narrow widths.
+- Precip chance may be `--` for live weather when API probability is unavailable.
+- Optional GitHub icon badge appears when `GITHUB_REPO_URL` is set.
+- Entire widget area is wrapped in a link that opens in a new tab.
