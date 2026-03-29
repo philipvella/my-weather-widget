@@ -18,6 +18,14 @@
       <h1 class="text-3xl font-semibold tracking-wide">
         <%= city %><% if (country) { %>, <span class="opacity-70"><%= country %></span><% } %>
       </h1>
+      <% if (selectedDateLabel) { %>
+        <p class="text-sm mt-1 opacity-70">
+          <% if (forecastMode) { %>Forecast for<% } else { %>Date<% } %>: <span class="font-medium"><%= selectedDateLabel %></span>
+        </p>
+      <% } %>
+      <% if (infoMessage) { %>
+        <p class="text-sm mt-3 px-4 py-2 rounded-lg bg-black/20 border border-white/20 max-w-md"><%= infoMessage %></p>
+      <% } %>
     </header>
 
     <!-- Icon + temperature -->

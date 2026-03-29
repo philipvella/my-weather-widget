@@ -32,8 +32,17 @@ A server-side rendered weather widget that can be embedded directly in Notion (o
 | Parameter | Values | Default |
 |---|---|---|
 | `units` | `metric` (°C, m/s) \| `imperial` (°F, mph) | `metric` |
+| `date` | `YYYY-MM-DD` (forecast date) | none |
 
 Example: `/weather/london?units=imperial`
+
+Example with date: `/weather/london?date=2026-04-01`
+
+### Date behavior
+
+- If `date` is in the future (within OpenWeather's forecast window), the widget shows forecast data for that day.
+- If `date` is in the past, the widget shows a friendly "date has passed" message and falls back to live weather.
+- If `date` format is invalid or forecast is unavailable for that date, the widget shows a friendly message and falls back to live weather.
 
 ---
 

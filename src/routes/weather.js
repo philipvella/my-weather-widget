@@ -1,9 +1,15 @@
 const express = require('express');
 const router  = express.Router();
 const weatherService = require('../services/weatherService');
-const { getConditionStyles, getUnitSymbol, getWindUnit } = require('../utils/helpers');
+const {
+  getConditionStyles,
+  getUnitSymbol,
+  getWindUnit,
+  parseDateQuery,
+  formatDateLabel,
+} = require('../utils/helpers');
 
-function buildViewData(data, units) {
+function buildViewData(data, units, extras = {}) {
   const styles = getConditionStyles(data.weather[0].main);
   return {
     city:          data.name,
@@ -19,6 +25,88 @@ function buildViewData(data, units) {
     windUnit:      getWindUnit(units),
     bgGradient:    styles.bg,
     textColor:     styles.text,
+    selectedDate:  extras.selectedDate || null,
+    selectedDateLabel: extras.selectedDate ? formatDateLabel(extras.selectedDate) : null,
+    infoMessage:   extras.infoMessage || null,
+    forecastMode:  Boolean(extras.selectedDate),
+  };
+}
+
+async function resolveWeatherByCity(city, units, dateQuery) {
+  const parsedDate = parseDateQuery(dateQuery);
+
+  if (!parsedDate.dateQuery) {
+    const data = await weatherService.getWeatherByCity(city, units);
+    return { data, selectedDate: null, infoMessage: null };
+  }
+
+  if (!parsedDate.isValid) {
+    const data = await weatherService.getWeatherByCity(city, units);
+    return {
+      data,
+      selectedDate: parsedDate.dateQuery,
+      infoMessage: 'That date format is invalid. Use YYYY-MM-DD. Showing live weather instead.',
+    };
+  }
+
+  if (parsedDate.isPast) {
+    const data = await weatherService.getWeatherByCity(city, units);
+    return {
+      data,
+      selectedDate: parsedDate.dateQuery,
+      infoMessage: 'That date has already passed. Showing live weather instead.',
+    };
+  }
+
+  const forecastData = await weatherService.getForecastByCityAndDate(city, parsedDate.dateQuery, units);
+  if (forecastData) {
+    return { data: forecastData, selectedDate: parsedDate.dateQuery, infoMessage: null };
+  }
+
+  const data = await weatherService.getWeatherByCity(city, units);
+  return {
+    data,
+    selectedDate: parsedDate.dateQuery,
+    infoMessage: 'No forecast is available for that date yet. Showing live weather instead.',
+  };
+}
+
+async function resolveWeatherByCoordinates(lat, lon, units, dateQuery) {
+  const parsedDate = parseDateQuery(dateQuery);
+
+  if (!parsedDate.dateQuery) {
+    const data = await weatherService.getWeatherByCoordinates(lat, lon, units);
+    return { data, selectedDate: null, infoMessage: null };
+  }
+
+  if (!parsedDate.isValid) {
+    const data = await weatherService.getWeatherByCoordinates(lat, lon, units);
+    return {
+      data,
+      selectedDate: parsedDate.dateQuery,
+      infoMessage: 'That date format is invalid. Use YYYY-MM-DD. Showing live weather instead.',
+    };
+  }
+
+  if (parsedDate.isPast) {
+    const data = await weatherService.getWeatherByCoordinates(lat, lon, units);
+    return {
+      data,
+      selectedDate: parsedDate.dateQuery,
+      infoMessage: 'That date has already passed. Showing live weather instead.',
+    };
+  }
+
+  const forecastData = await weatherService.getForecastByCoordinatesAndDate(lat, lon, parsedDate.dateQuery, units);
+  if (forecastData) {
+    return { data: forecastData, selectedDate: parsedDate.dateQuery, infoMessage: null };
+  }
+
+  const data = await weatherService.getWeatherByCoordinates(lat, lon, units);
+  return {
+    data,
+    selectedDate: parsedDate.dateQuery,
+    infoMessage: 'No forecast is available for that date yet. Showing live weather instead.',
   };
 }
 
@@ -26,10 +114,14 @@ function buildViewData(data, units) {
 router.get('/coordinate/:lat/:lon', async (req, res) => {
   const { lat, lon } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';
+  const dateQuery = typeof req.query.date === 'string' ? req.query.date : null;
 
   try {
-    const data = await weatherService.getWeatherByCoordinates(lat, lon, units);
-    res.render('weather', buildViewData(data, units));
+    const result = await resolveWeatherByCoordinates(lat, lon, units, dateQuery);
+    res.render('weather', buildViewData(result.data, units, {
+      selectedDate: result.selectedDate,
+      infoMessage: result.infoMessage,
+    }));
   } catch (err) {
     console.error('[route] coordinate error:', err.message);
     res.status(err.status || 500).render('error', {
@@ -43,10 +135,14 @@ router.get('/coordinate/:lat/:lon', async (req, res) => {
 router.get('/:city', async (req, res) => {
   const { city } = req.params;
   const units = req.query.units === 'imperial' ? 'imperial' : 'metric';
+  const dateQuery = typeof req.query.date === 'string' ? req.query.date : null;
 
   try {
-    const data = await weatherService.getWeatherByCity(city, units);
-    res.render('weather', buildViewData(data, units));
+    const result = await resolveWeatherByCity(city, units, dateQuery);
+    res.render('weather', buildViewData(result.data, units, {
+      selectedDate: result.selectedDate,
+      infoMessage: result.infoMessage,
+    }));
   } catch (err) {
     console.error('[route] city error:', err.message);
     res.status(err.status || 500).render('error', {

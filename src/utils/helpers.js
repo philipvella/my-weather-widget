@@ -24,5 +24,51 @@ function getWindUnit(units) {
   return units === 'imperial' ? 'mph' : 'm/s';
 }
 
-module.exports = { getConditionStyles, getUnitSymbol, getWindUnit };
+function parseDateQuery(dateQuery) {
+  if (!dateQuery) return { dateQuery: null, isValid: true, isPast: false };
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateQuery)) {
+    return { dateQuery, isValid: false, isPast: false };
+  }
+
+  const parsed = new Date(`${dateQuery}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return { dateQuery, isValid: false, isPast: false };
+  }
+
+  // Guard impossible dates like 2026-02-31 that JS auto-rolls.
+  if (parsed.toISOString().slice(0, 10) !== dateQuery) {
+    return { dateQuery, isValid: false, isPast: false };
+  }
+
+  const todayUtc = new Date();
+  todayUtc.setUTCHours(0, 0, 0, 0);
+
+  return {
+    dateQuery,
+    isValid: true,
+    isPast: parsed.getTime() < todayUtc.getTime(),
+  };
+}
+
+function formatDateLabel(dateQuery) {
+  if (!dateQuery) return null;
+  const parsed = new Date(`${dateQuery}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) return dateQuery;
+  return new Intl.DateTimeFormat('en-GB', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(parsed);
+}
+
+module.exports = {
+  getConditionStyles,
+  getUnitSymbol,
+  getWindUnit,
+  parseDateQuery,
+  formatDateLabel,
+};
 
