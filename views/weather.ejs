@@ -46,11 +46,11 @@
         <h1
           tabindex="0"
           title="Tap to show full location"
-          class="text-xl sm:text-3xl landscape:text-sm lg:text-3xl font-semibold tracking-wide leading-tight truncate cursor-help outline-none"
+          class="text-xl sm:text-3xl landscape:text-sm lg:text-3xl font-semibold tracking-wide leading-tight truncate outline-none"
         >
           <%= city %><% if (country) { %>, <span class="opacity-70"><%= country %></span><% } %>
         </h1>
-        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 landscape:left-0 landscape:translate-x-0 bottom-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 landscape:left-0 landscape:translate-x-0 top-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
           <%= city %><% if (country) { %>, <%= country %><% } %>
         </span>
       </div>
@@ -68,14 +68,14 @@
     <section aria-label="Current temperature" class="flex flex-col items-center mb-2 landscape:mb-0 landscape:flex-row landscape:items-center landscape:gap-1 landscape:flex-1 landscape:min-w-0">
       <div class="relative flex-shrink-0">
         <input id="weather-icon-tooltip-toggle" type="checkbox" class="peer sr-only" />
-        <label for="weather-icon-tooltip-toggle" class="block cursor-help" title="Tap to show weather description">
+        <label for="weather-icon-tooltip-toggle" class="block" title="Tap to show weather description">
           <img
             src="https://openweathermap.org/img/wn/<%= icon %>@2x.png"
             alt="<%= description %>"
             class="drop-shadow-lg w-20 h-20 sm:w-28 sm:h-28 landscape:w-10 landscape:h-10"
           />
         </label>
-        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity peer-checked:opacity-100">
+        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity peer-checked:opacity-100">
           <%= description %>
         </span>
       </div>
