@@ -9,6 +9,7 @@ Server-side rendered weather widget for embeds (Notion, dashboards, iframes), bu
 - Default units are metric (Celsius), with optional imperial (Fahrenheit).
 - Default landing route redirects to London.
 - Caching with Upstash Redis (Vercel KV-compatible setup) and automatic local `node-cache` fallback.
+- Build/dev generate a local `favicon.ico` (plus `favicon.svg` static icon).
 - Responsive widget tuned for tiny landscape sizes and mobile embeds.
 
 ## Routes
@@ -31,12 +32,14 @@ No `/weather/*` prefix is used.
 | `from`  | `YYYY-MM-DD`           | none     | Start date for range forecast (must be paired with `to`) |
 | `to`    | `YYYY-MM-DD`           | none     | End date for range forecast (inclusive)                  |
 
+When `from` or `to` is present, range mode is used and `date` is ignored.
+
 Examples:
 
 - `/city/london`
 - `/city/london?units=imperial`
 - `/city/london?date=2026-04-02`
-- `/city/london?from=TODAY&to=TODAY+2` (e.g. `/city/london?from=2026-03-29&to=2026-03-31`)
+- `/city/london?from=2026-03-29&to=2026-03-31`
 - `/coordinates/48.8566/2.3522?units=metric&date=2026-04-02`
 
 ## Date behavior
@@ -54,6 +57,8 @@ Examples:
 - If range is valid and data exists, widget renders a compact multi-day forecast strip.
 - Clicking a day in the strip keeps the same range length and shifts the window to start at that clicked day.
   - Example: `from=2026-03-29&to=2026-03-31` (3 days) -> click `2026-03-30` -> new range becomes `from=2026-03-30&to=2026-04-01`.
+- If only some days have forecast data, all requested day boxes still render; missing days show `Too early to predict`.
+- `Too early to predict` boxes are intentionally non-clickable.
 - If range is invalid or includes past days, widget falls back to live weather with a message.
 - If no forecast exists for that range window, widget falls back to live weather + `Unavailable, showing live.`
 
@@ -165,7 +170,15 @@ vercel --prod
 ## UI notes
 
 - Main layout adapts for both portrait and short/wide landscape embeds.
+- In multi-day mode, very wide + short landscape layouts hide the large current temperature block to preserve space for day boxes.
 - Weather details include humidity, wind, precipitation chance, and precipitation amount.
 - At narrow widths, labels switch to icons with tooltips for readability.
 - Date label remains visible across sizes; only the `Forecast for:` prefix is hidden on small screens.
+- In range mode, the active day is visually highlighted; day boxes keep equal dimensions to avoid layout shift.
+- Missing forecast days render as `Too early to predict` placeholder boxes.
 - Bottom-right action icons: open-in-new-tab (always) and GitHub (when configured).
+
+## Demo page
+
+- `/demo` includes a date-range section that starts from today (`from=today`, `to=today+2`) and demonstrates click-to-shift behavior.
+- Other demo sections show common embed sizes for city/coordinates routes.
