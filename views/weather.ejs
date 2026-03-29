@@ -5,61 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= city %><% if (country) { %>, <%= country %><% } %> — Weather</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>* { box-sizing: border-box; } body { margin: 0; }</style>
 </head>
-<body class="bg-gradient-to-br <%= bgGradient %> min-h-screen">
+<body class="m-0 bg-gradient-to-br <%= bgGradient %> min-h-screen overflow-y-auto">
   <main
     role="main"
-    class="min-h-screen flex flex-col items-center justify-center p-6 <%= textColor %>"
+    class="min-h-screen flex flex-col items-center justify-start p-4 sm:p-6 gap-2 <%= textColor %> landscape:flex-row landscape:items-center landscape:justify-between landscape:gap-3 landscape:py-2 landscape:px-4"
   >
 
     <!-- Location -->
-    <header class="text-center mb-4">
-      <h1 class="text-3xl font-semibold tracking-wide">
+    <header class="w-full text-center mb-4 landscape:mb-0 landscape:text-left landscape:flex-1">
+      <h1 class="text-2xl sm:text-3xl landscape:text-lg lg:text-3xl font-semibold tracking-wide leading-tight">
         <%= city %><% if (country) { %>, <span class="opacity-70"><%= country %></span><% } %>
       </h1>
       <% if (selectedDateLabel) { %>
-        <p class="text-sm mt-1 opacity-70">
+        <p class="text-sm landscape:text-xs mt-1 opacity-70">
           <% if (forecastMode) { %>Forecast for<% } else { %>Date<% } %>: <span class="font-medium"><%= selectedDateLabel %></span>
         </p>
       <% } %>
       <% if (infoMessage) { %>
-        <p class="text-sm mt-3 px-4 py-2 rounded-lg bg-black/20 border border-white/20 max-w-md"><%= infoMessage %></p>
+        <p class="text-sm landscape:text-xs mt-3 landscape:mt-2 px-4 py-2 rounded-lg bg-black/20 border border-white/20 max-w-md"><%= infoMessage %></p>
       <% } %>
     </header>
 
     <!-- Icon + temperature -->
-    <section aria-label="Current temperature" class="flex flex-col items-center mb-4">
+    <section aria-label="Current temperature" class="flex flex-col items-center mb-4 landscape:mb-0 landscape:flex-row landscape:items-center landscape:gap-2 landscape:flex-1">
       <img
         src="https://openweathermap.org/img/wn/<%= icon %>@2x.png"
         alt="<%= description %>"
-        width="100"
-        height="100"
-        class="drop-shadow-lg"
+        class="drop-shadow-lg w-24 h-24 sm:w-28 sm:h-28 landscape:w-16 landscape:h-16"
       />
-      <div class="text-7xl font-thin tracking-tighter leading-none mt-1">
-        <%= temperature %><span class="text-4xl align-top mt-2 inline-block"><%= unitSymbol %></span>
+      <div class="text-6xl sm:text-7xl landscape:text-4xl font-thin tracking-tighter leading-none mt-1 landscape:mt-0">
+        <%= temperature %><span class="text-3xl sm:text-4xl landscape:text-2xl align-top mt-2 inline-block"><%= unitSymbol %></span>
       </div>
-      <p class="capitalize mt-2 text-lg font-light opacity-80"><%= description %></p>
-      <p class="text-sm mt-1 opacity-60">Feels like <%= feelsLike %><%= unitSymbol %></p>
+      <p class="capitalize mt-2 landscape:mt-0 text-base sm:text-lg landscape:text-sm font-light opacity-80"><%= description %></p>
+      <p class="text-sm landscape:text-xs mt-1 landscape:mt-0 opacity-60">Feels like <%= feelsLike %><%= unitSymbol %></p>
     </section>
 
     <!-- Extra stats -->
     <section
       aria-label="Weather details"
-      class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-2 text-center"
+      class="w-full max-w-3xl grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-2 text-center landscape:mt-0 landscape:flex landscape:flex-nowrap landscape:justify-end landscape:items-center landscape:gap-3 landscape:flex-[1.5]"
     >
-      <div>
+      <div class="landscape:min-w-20">
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Humidity</p>
-        <p class="text-xl font-medium"><%= humidity %>%</p>
+        <p class="text-lg sm:text-xl landscape:text-base font-medium"><%= humidity %>%</p>
       </div>
-      <div>
+      <div class="landscape:min-w-20">
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Wind</p>
-        <p class="text-xl font-medium"><%= windSpeed %> <span class="text-sm font-normal"><%= windUnit %></span></p>
+        <p class="text-lg sm:text-xl landscape:text-base font-medium"><%= windSpeed %> <span class="text-xs sm:text-sm font-normal"><%= windUnit %></span></p>
       </div>
-      <div>
+      <div class="landscape:min-w-20">
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Precip chance</p>
-        <p class="text-xl font-medium">
+        <p class="text-lg sm:text-xl landscape:text-base font-medium">
           <% if (precipitationChance === null) { %>
             --
           <% } else { %>
@@ -67,9 +64,9 @@
           <% } %>
         </p>
       </div>
-      <div>
+      <div class="landscape:min-w-20">
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Precip amount</p>
-        <p class="text-xl font-medium"><%= precipitationAmountMm.toFixed(1) %> <span class="text-sm font-normal">mm</span></p>
+        <p class="text-lg sm:text-xl landscape:text-base font-medium"><%= precipitationAmountMm.toFixed(1) %> <span class="text-xs sm:text-sm font-normal">mm</span></p>
       </div>
     </section>
 
