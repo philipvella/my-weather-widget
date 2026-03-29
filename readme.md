@@ -132,7 +132,7 @@ LHCI_BASE_URL=http://localhost:4173 npm run lighthouse:ci
 
 Notes:
 
-- Audited URLs are defined in `.lighthouserc.cjs` (`/city/london` and `/demo`).
+- Audited URLs are defined in `.lighthouserc.cjs` (`/city/london` and `/coordinates/50.447086/5.962080`).
 - The default assertions require `1.00` minimum score for Performance, Accessibility, Best Practices, and SEO.
 - `⚠️ GitHub token not set` during `lhci healthcheck` is expected unless you plan to post results to GitHub status checks.
 
