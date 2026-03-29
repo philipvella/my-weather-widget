@@ -7,7 +7,9 @@
   },
   "scripts": {
     "dev": "nodemon api/index.js",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@upstash/redis": "^1.37.0",
@@ -19,6 +21,8 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.1",
+    "vitest": "^3.2.4"
   }
 }

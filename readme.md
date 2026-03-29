@@ -63,6 +63,18 @@ App runs at `http://localhost:3000`.
 
 If Upstash vars are missing locally, cache falls back to in-process `node-cache`.
 
+## Testing
+
+```bash
+npm test
+```
+
+Watch mode:
+
+```bash
+npm run test:watch
+```
+
 ## Deploy (Vercel)
 
 1. Add Upstash Redis integration in Vercel Marketplace.
