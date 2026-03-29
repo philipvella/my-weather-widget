@@ -42,9 +42,18 @@
 
     <!-- Location -->
     <header class="w-full text-center mb-2 landscape:mb-0 landscape:text-left landscape:flex-1 landscape:min-w-0">
-      <h1 class="text-xl sm:text-3xl landscape:text-sm lg:text-3xl font-semibold tracking-wide leading-tight truncate">
-        <%= city %><% if (country) { %>, <span class="opacity-70"><%= country %></span><% } %>
-      </h1>
+      <div class="relative inline-block max-w-full group">
+        <h1
+          tabindex="0"
+          title="Tap to show full location"
+          class="text-xl sm:text-3xl landscape:text-sm lg:text-3xl font-semibold tracking-wide leading-tight truncate cursor-help outline-none"
+        >
+          <%= city %><% if (country) { %>, <span class="opacity-70"><%= country %></span><% } %>
+        </h1>
+        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 landscape:left-0 landscape:translate-x-0 bottom-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+          <%= city %><% if (country) { %>, <%= country %><% } %>
+        </span>
+      </div>
       <% if (selectedDateLabel) { %>
         <p class="text-xs sm:text-sm mt-1 opacity-70 truncate">
           <span class="hidden sm:inline"><% if (forecastMode) { %>Forecast for<% } else { %>Date<% } %>: </span><span class="font-medium"><%= selectedDateLabel %></span>
@@ -57,11 +66,19 @@
 
     <!-- Icon + temperature -->
     <section aria-label="Current temperature" class="flex flex-col items-center mb-2 landscape:mb-0 landscape:flex-row landscape:items-center landscape:gap-1 landscape:flex-1 landscape:min-w-0">
-      <img
-        src="https://openweathermap.org/img/wn/<%= icon %>@2x.png"
-        alt="<%= description %>"
-        class="drop-shadow-lg w-20 h-20 sm:w-28 sm:h-28 landscape:w-10 landscape:h-10"
-      />
+      <div class="relative flex-shrink-0">
+        <input id="weather-icon-tooltip-toggle" type="checkbox" class="peer sr-only" />
+        <label for="weather-icon-tooltip-toggle" class="block cursor-help" title="Tap to show weather description">
+          <img
+            src="https://openweathermap.org/img/wn/<%= icon %>@2x.png"
+            alt="<%= description %>"
+            class="drop-shadow-lg w-20 h-20 sm:w-28 sm:h-28 landscape:w-10 landscape:h-10"
+          />
+        </label>
+        <span class="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 whitespace-nowrap rounded bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity peer-checked:opacity-100">
+          <%= description %>
+        </span>
+      </div>
       <div class="text-5xl sm:text-7xl landscape:text-2xl font-thin tracking-tighter leading-none mt-1 landscape:mt-0 whitespace-nowrap">
         <%= temperature %><span class="text-2xl sm:text-4xl landscape:text-sm align-top mt-2 inline-block"><%= unitSymbol %></span>
       </div>
