@@ -92,6 +92,11 @@ All tests live under `__tests__/`.
 
 Prettier is enforced via Husky + lint-staged on commit.
 
+Pre-push runs only:
+
+- `npm run format:check`
+- `npm test`
+
 ```bash
 npm run format
 npm run format:check
@@ -103,7 +108,7 @@ npm run prepare
 
 ## Lighthouse checks (manual)
 
-Run this flow when you want Lighthouse scores locally without relying on the git hook:
+Lighthouse is intentionally manual (not enforced in git hooks). Run this flow when needed:
 
 1. Build assets
 
@@ -130,14 +135,6 @@ Notes:
 - Audited URLs are defined in `.lighthouserc.cjs` (`/city/london` and `/demo`).
 - The default assertions require `1.00` minimum score for Performance, Accessibility, Best Practices, and SEO.
 - `⚠️ GitHub token not set` during `lhci healthcheck` is expected unless you plan to post results to GitHub status checks.
-
-## Pre-merge quality command
-
-```bash
-npm run quality:premerge
-```
-
-This runs formatting check, tests, production build, and Lighthouse in one command.
 
 ## Deploy (Vercel)
 
