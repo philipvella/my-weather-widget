@@ -12,6 +12,7 @@ Server-side weather widget for Notion or any iframe host.
 | Route | Description |
 |---|---|
 | `/` | Redirects to `/city/london` |
+| `/demo` | Live embed demo showing the widget at common iframe sizes |
 | `/city/:city` | Weather by city, e.g. `/city/paris` |
 | `/coordinates/:lat/:lon` | Weather by coordinates, e.g. `/coordinates/50.447/5.962` |
 

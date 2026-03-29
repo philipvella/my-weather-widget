@@ -34,6 +34,7 @@ app.use((req, res, next) => {
 
 // ── Routes ─────────────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.redirect('/city/london'));
+app.get('/demo', (req, res) => res.render('demo'));
 app.use('/', weatherRouter);
 
 // ── 404 ────────────────────────────────────────────────────────────────────────
