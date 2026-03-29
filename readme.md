@@ -5,7 +5,7 @@ Server-side rendered weather widget for embeds (Notion, dashboards, iframes), bu
 ## Features
 
 - SSR via Express + EJS (no client-side framework required).
-- OpenWeather current weather + date-aware forecast lookup.
+- OpenWeather current weather + single-date or date-range forecast lookup.
 - Default units are metric (Celsius), with optional imperial (Fahrenheit).
 - Default landing route redirects to London.
 - Caching with Upstash Redis (Vercel KV-compatible setup) and automatic local `node-cache` fallback.
@@ -24,16 +24,19 @@ No `/weather/*` prefix is used.
 
 ## Query parameters
 
-| Param   | Values                 | Default  | Notes                                                |
-| ------- | ---------------------- | -------- | ---------------------------------------------------- |
-| `units` | `metric` or `imperial` | `metric` | `metric` = Celsius, `imperial` = Fahrenheit          |
-| `date`  | `YYYY-MM-DD`           | none     | Requests forecast for a specific date when available |
+| Param   | Values                 | Default  | Notes                                                    |
+| ------- | ---------------------- | -------- | -------------------------------------------------------- |
+| `units` | `metric` or `imperial` | `metric` | `metric` = Celsius, `imperial` = Fahrenheit              |
+| `date`  | `YYYY-MM-DD`           | none     | Requests forecast for a specific date when available     |
+| `from`  | `YYYY-MM-DD`           | none     | Start date for range forecast (must be paired with `to`) |
+| `to`    | `YYYY-MM-DD`           | none     | End date for range forecast (inclusive)                  |
 
 Examples:
 
 - `/city/london`
 - `/city/london?units=imperial`
 - `/city/london?date=2026-04-02`
+- `/city/london?from=TODAY&to=TODAY+2` (e.g. `/city/london?from=2026-03-29&to=2026-03-31`)
 - `/coordinates/48.8566/2.3522?units=metric&date=2026-04-02`
 
 ## Date behavior
@@ -43,6 +46,16 @@ Examples:
 - Past `date`: shows live weather + past-date message.
 - Valid non-past `date` with forecast available: shows forecast for that date.
 - Valid non-past `date` with no forecast data: shows live weather + `Unavailable, showing live.`
+
+## Date range behavior (`from` + `to`)
+
+- Uses OpenWeather 5-day / 3-hour forecast API data filtered across the requested inclusive range.
+- Both `from` and `to` are required and must be valid `YYYY-MM-DD` values.
+- If range is valid and data exists, widget renders a compact multi-day forecast strip.
+- Clicking a day in the strip keeps the same range length and shifts the window to start at that clicked day.
+  - Example: `from=2026-03-29&to=2026-03-31` (3 days) -> click `2026-03-30` -> new range becomes `from=2026-03-30&to=2026-04-01`.
+- If range is invalid or includes past days, widget falls back to live weather with a message.
+- If no forecast exists for that range window, widget falls back to live weather + `Unavailable, showing live.`
 
 ## Environment variables
 
@@ -75,6 +88,7 @@ npm run dev
 App URL: `http://localhost:3000`
 
 If Upstash Redis env vars are missing locally, the app automatically uses in-process cache.
+Current weather, single-date forecasts, and date-range forecasts all use cache keys (location + units + date inputs).
 
 ## Tests
 

@@ -80,10 +80,25 @@ function selectForecastForDate(entries, dateQuery) {
   });
 }
 
+function listDatesInRange(fromDate, toDate) {
+  const dates = [];
+  const cursor = new Date(`${fromDate}T00:00:00.000Z`);
+  const end = new Date(`${toDate}T00:00:00.000Z`);
+
+  while (cursor.getTime() <= end.getTime()) {
+    dates.push(cursor.toISOString().slice(0, 10));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  return dates;
+}
+
 function normalizeForecastEntry(entry, cityMeta) {
   return {
     name: cityMeta.name,
     sys: { country: cityMeta.country },
+    dt: entry.dt,
+    dt_txt: entry.dt_txt,
     main: entry.main,
     weather: entry.weather,
     wind: entry.wind,
@@ -91,6 +106,40 @@ function normalizeForecastEntry(entry, cityMeta) {
     rain: entry.rain,
     snow: entry.snow,
   };
+}
+
+async function getForecastRangeByCity(city, fromDate, toDate, units = 'metric') {
+  const cacheKey = `forecast-range:city:${city.toLowerCase()}:${fromDate}:${toDate}:${units}`;
+  return getOrSetCache(cacheKey, async () => {
+    const data = await fetchWeatherFromApi(API_ENDPOINTS.forecast, { q: city, units }, city);
+    const dates = listDatesInRange(fromDate, toDate);
+    return dates
+      .map((date) => {
+        const selected = selectForecastForDate(data.list, date);
+        if (!selected) return null;
+        return normalizeForecastEntry(selected, data.city);
+      })
+      .filter(Boolean);
+  });
+}
+
+async function getForecastRangeByCoordinates(lat, lon, fromDate, toDate, units = 'metric') {
+  const cacheKey = `forecast-range:coord:${lat}:${lon}:${fromDate}:${toDate}:${units}`;
+  return getOrSetCache(cacheKey, async () => {
+    const data = await fetchWeatherFromApi(
+      API_ENDPOINTS.forecast,
+      { lat, lon, units },
+      `${lat}, ${lon}`
+    );
+    const dates = listDatesInRange(fromDate, toDate);
+    return dates
+      .map((date) => {
+        const selected = selectForecastForDate(data.list, date);
+        if (!selected) return null;
+        return normalizeForecastEntry(selected, data.city);
+      })
+      .filter(Boolean);
+  });
 }
 
 async function getForecastByCityAndDate(city, dateQuery, units = 'metric') {
@@ -122,4 +171,6 @@ module.exports = {
   getWeatherByCoordinates,
   getForecastByCityAndDate,
   getForecastByCoordinatesAndDate,
+  getForecastRangeByCity,
+  getForecastRangeByCoordinates,
 };

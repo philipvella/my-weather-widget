@@ -4,6 +4,7 @@ import {
   getUnitSymbol,
   getWindUnit,
   parseDateQuery,
+  parseDateRangeQuery,
   formatDateLabel,
 } from '../../src/utils/helpers';
 
@@ -48,5 +49,22 @@ describe('helpers', () => {
   it('formats date labels', () => {
     expect(formatDateLabel('2026-04-02')).toContain('2026');
     expect(formatDateLabel(null)).toBe(null);
+  });
+
+  it('parses and validates date range query', () => {
+    const empty = parseDateRangeQuery(null, null);
+    expect(empty).toMatchObject({ hasRange: false, isValid: true, rangeDays: 0 });
+
+    const missingTo = parseDateRangeQuery('2099-01-01', null);
+    expect(missingTo).toMatchObject({ hasRange: true, isValid: false });
+
+    const invalid = parseDateRangeQuery('2099/01/01', '2099-01-03');
+    expect(invalid.isValid).toBe(false);
+
+    const invalidOrder = parseDateRangeQuery('2099-01-03', '2099-01-01');
+    expect(invalidOrder.isValid).toBe(false);
+
+    const valid = parseDateRangeQuery('2099-01-01', '2099-01-03');
+    expect(valid).toMatchObject({ hasRange: true, isValid: true, rangeDays: 3, isPast: false });
   });
 });

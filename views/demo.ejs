@@ -102,9 +102,32 @@
         ></iframe>
       </section>
 
+      <!-- Date range — click-to-shift explained -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">
+          Date range — click to shift — 360 × 480
+        </h2>
+        <p class="text-gray-400 mt-1 mb-2 text-sm">
+          All embeds above share the same 3-day window:
+          <code class="text-gray-400">from=<%= from %></code> →
+          <code class="text-gray-400">to=<%= to %></code>. Click any day chip inside the widget to
+          shift the entire window forward to that day while keeping the 3-day span. The URL updates
+          in place — no new tab.
+        </p>
+        <iframe
+          src="/city/london?from=<%= from %>&to=<%= to %>"
+          width="360"
+          height="480"
+          frameborder="0"
+          class="rounded-lg overflow-hidden block"
+          title="London weather — 3-day range, click to shift"
+        ></iframe>
+      </section>
+
       <footer class="text-xs text-gray-600 border-t border-gray-800 pt-4">
-        Embed any route as an iframe. All query params (<code class="text-gray-400">units</code> and
-        <code class="text-gray-400">date</code>) work inside iframes too.
+        Embed any route as an iframe. All query params (<code class="text-gray-400">units</code>,
+        <code class="text-gray-400">date</code>, <code class="text-gray-400">from</code>, and
+        <code class="text-gray-400">to</code>) work inside iframes too.
       </footer>
     </div>
   </body>

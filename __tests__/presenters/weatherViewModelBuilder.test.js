@@ -50,4 +50,49 @@ describe('buildWeatherViewModel', () => {
     expect(vm.unitSymbol).toBe('°F');
     expect(vm.windUnit).toBe('mph');
   });
+
+  it('builds range metadata and mapped range items', () => {
+    const vm = buildWeatherViewModel(sampleData, 'metric', {
+      selectedRange: { from: '2030-04-01', to: '2030-04-03' },
+      rangeItems: [
+        {
+          ...sampleData,
+          dt_txt: '2030-04-01 12:00:00',
+        },
+        {
+          ...sampleData,
+          dt_txt: '2030-04-02 12:00:00',
+          main: { ...sampleData.main, temp: 18.2 },
+        },
+        {
+          ...sampleData,
+          dt_txt: '2030-04-03 12:00:00',
+          main: { ...sampleData.main, temp: 19.1 },
+        },
+      ],
+    });
+
+    expect(vm.forecastMode).toBe(true);
+    expect(vm.selectedRangeLabel).toContain('2030');
+    expect(vm.rangeItems).toHaveLength(3);
+    expect(vm.rangeItems[0]).toMatchObject({
+      date: '2030-04-01',
+      temperature: 12,
+      unitSymbol: '°C',
+      focusRange: {
+        from: '2030-04-01',
+        to: '2030-04-03',
+      },
+    });
+
+    expect(vm.rangeItems[1].focusRange).toEqual({
+      from: '2030-04-02',
+      to: '2030-04-04',
+    });
+
+    expect(vm.rangeItems[2].focusRange).toEqual({
+      from: '2030-04-03',
+      to: '2030-04-05',
+    });
+  });
 });

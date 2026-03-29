@@ -73,6 +73,11 @@
             ><% if (forecastMode) { %>Forecast for<% } else { %>Date<% } %>: </span
           ><span class="font-medium"><%= selectedDateLabel %></span>
         </p>
+        <% } else if (selectedRangeLabel) { %>
+        <p class="text-xs sm:text-sm mt-1 opacity-70 truncate">
+          <span class="hidden sm:inline">Forecast range: </span
+          ><span class="font-medium"><%= selectedRangeLabel %></span>
+        </p>
         <% } %> <% if (infoMessage) { %>
         <p
           class="text-sm m-0 px-2 py-1 rounded-lg bg-black/20 border border-white/20 max-w-md mx-auto text-center landscape:mx-0 landscape:text-left"
@@ -212,6 +217,39 @@
           </p>
         </div>
       </section>
+
+      <% if (rangeItems && rangeItems.length > 1) { %>
+      <section
+        aria-label="Forecast range details"
+        class="w-full max-w-3xl mt-1 flex flex-wrap items-center justify-center gap-1 landscape:justify-end landscape:gap-1"
+      >
+        <% rangeItems.forEach((item) => { %> <% const dateHref = basePath && item.focusRange?.from
+        && item.focusRange?.to ?
+        `${basePath}?units=${units}&from=${item.focusRange.from}&to=${item.focusRange.to}` : null;
+        %>
+        <a
+          href="<%= dateHref || '#' %>"
+          class="rounded-md bg-black/15 border border-white/20 px-2 py-1 text-center min-w-20 no-underline text-inherit <%= dateHref ? 'hover:bg-black/25 transition-colors cursor-pointer' : 'pointer-events-none' %>"
+          title="Focus forecast on <%= item.dateLabel || item.date %>"
+          aria-label="Focus forecast on <%= item.dateLabel || item.date %>"
+        >
+          <p class="text-xs opacity-80 truncate"><%= item.dateLabel || item.date %></p>
+          <% if (item.icon) { %>
+          <img
+            src="https://openweathermap.org/img/wn/<%= item.icon %>.png"
+            alt="<%= item.description %>"
+            loading="lazy"
+            decoding="async"
+            width="32"
+            height="32"
+            class="w-6 h-6 sm:w-8 sm:h-8 mx-auto"
+          />
+          <% } %>
+          <p class="text-sm font-medium"><%= item.temperature %><%= item.unitSymbol %></p>
+        </a>
+        <% }) %>
+      </section>
+      <% } %>
     </main>
   </body>
 </html>

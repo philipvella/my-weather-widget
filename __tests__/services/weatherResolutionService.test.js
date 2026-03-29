@@ -5,16 +5,37 @@ import {
 } from '../../src/services/weatherResolutionService';
 
 describe('weatherResolutionService', () => {
-  function makeService(parseResult, forecastResult = null) {
+  function makeService(
+    parseResult,
+    forecastResult = null,
+    parseRangeResult = null,
+    rangeResult = []
+  ) {
     const weatherService = {
       getWeatherByCity: vi.fn().mockResolvedValue({ source: 'current-city' }),
       getForecastByCityAndDate: vi.fn().mockResolvedValue(forecastResult),
       getWeatherByCoordinates: vi.fn().mockResolvedValue({ source: 'current-coord' }),
       getForecastByCoordinatesAndDate: vi.fn().mockResolvedValue(forecastResult),
+      getForecastRangeByCity: vi.fn().mockResolvedValue(rangeResult),
+      getForecastRangeByCoordinates: vi.fn().mockResolvedValue(rangeResult),
     };
 
     const parseDateQuery = vi.fn().mockReturnValue(parseResult);
-    const service = createWeatherResolutionService({ weatherService, parseDateQuery });
+    const parseDateRangeQuery = vi.fn().mockReturnValue(
+      parseRangeResult || {
+        hasRange: false,
+        from: null,
+        to: null,
+        isValid: true,
+        isPast: false,
+        includesPast: false,
+      }
+    );
+    const service = createWeatherResolutionService({
+      weatherService,
+      parseDateQuery,
+      parseDateRangeQuery,
+    });
 
     return { service, weatherService };
   }
@@ -91,5 +112,64 @@ describe('weatherResolutionService', () => {
     expect(result.selectedDate).toBe(parsed.dateQuery);
     expect(weatherService.getForecastByCityAndDate).toHaveBeenCalledTimes(1);
     expect(weatherService.getWeatherByCity).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns range forecast when from/to has data', async () => {
+    const rangeParse = {
+      hasRange: true,
+      from: '2099-01-01',
+      to: '2099-01-03',
+      isValid: true,
+      isPast: false,
+      includesPast: false,
+    };
+    const rangeItems = [{ source: 'range-day-1' }, { source: 'range-day-2' }];
+    const { service, weatherService } = makeService(
+      { dateQuery: null, isValid: true, isPast: false },
+      null,
+      rangeParse,
+      rangeItems
+    );
+
+    const result = await service.resolveRangeByCity('london', 'metric', '2099-01-01', '2099-01-03');
+
+    expect(result.data).toEqual(rangeItems[0]);
+    expect(result.rangeItems).toEqual(rangeItems);
+    expect(result.selectedRange).toEqual({ from: '2099-01-01', to: '2099-01-03' });
+    expect(weatherService.getForecastRangeByCity).toHaveBeenCalledWith(
+      'london',
+      '2099-01-01',
+      '2099-01-03',
+      'metric'
+    );
+  });
+
+  it('falls back with invalid range message', async () => {
+    const rangeParse = {
+      hasRange: true,
+      from: '2099-01-03',
+      to: '2099-01-01',
+      isValid: false,
+      isPast: false,
+      includesPast: false,
+    };
+    const { service, weatherService } = makeService(
+      { dateQuery: null, isValid: true, isPast: false },
+      null,
+      rangeParse,
+      []
+    );
+
+    const result = await service.resolveRangeByCoordinates(
+      '50.4',
+      '5.9',
+      'metric',
+      '2099-01-03',
+      '2099-01-01'
+    );
+
+    expect(result.infoMessage).toBe(DEFAULT_MESSAGES.invalidRange);
+    expect(weatherService.getWeatherByCoordinates).toHaveBeenCalledTimes(1);
+    expect(weatherService.getForecastRangeByCoordinates).not.toHaveBeenCalled();
   });
 });

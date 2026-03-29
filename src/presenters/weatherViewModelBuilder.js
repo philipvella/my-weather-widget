@@ -25,9 +25,54 @@ function extractPrecipitation(data) {
   return { precipitationAmountMm, precipitationChance };
 }
 
+function parseIsoDate(dateValue) {
+  if (typeof dateValue !== 'string') return null;
+  const parsed = new Date(`${dateValue}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+}
+
+function addUtcDays(dateValue, days) {
+  const parsed = parseIsoDate(dateValue);
+  if (!parsed) return null;
+  parsed.setUTCDate(parsed.getUTCDate() + days);
+  return parsed.toISOString().slice(0, 10);
+}
+
+function buildRangeItems(rangeItems, units, selectedRange) {
+  if (!Array.isArray(rangeItems)) return [];
+
+  const fromDate = parseIsoDate(selectedRange?.from);
+  const toDate = parseIsoDate(selectedRange?.to);
+  const spanDays =
+    fromDate && toDate ? Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1 : null;
+
+  return rangeItems.map((entry) => ({
+    date: typeof entry.dt_txt === 'string' ? entry.dt_txt.slice(0, 10) : null,
+    dateLabel: typeof entry.dt_txt === 'string' ? formatDateLabel(entry.dt_txt.slice(0, 10)) : null,
+    temperature: Math.round(entry.main.temp),
+    unitSymbol: getUnitSymbol(units),
+    icon: entry.weather?.[0]?.icon || null,
+    description: entry.weather?.[0]?.description || 'forecast',
+    focusRange:
+      spanDays && typeof entry.dt_txt === 'string'
+        ? {
+            from: entry.dt_txt.slice(0, 10),
+            to: addUtcDays(entry.dt_txt.slice(0, 10), spanDays - 1),
+          }
+        : null,
+  }));
+}
+
 function buildWeatherViewModel(data, units, extras = {}) {
   const styles = getConditionStyles(data.weather[0].main);
   const { precipitationAmountMm, precipitationChance } = extractPrecipitation(data);
+  const selectedRange = extras.selectedRange || null;
+  const selectedRangeLabel =
+    selectedRange?.from && selectedRange?.to
+      ? `${formatDateLabel(selectedRange.from)} - ${formatDateLabel(selectedRange.to)}`
+      : null;
+  const rangeItems = buildRangeItems(extras.rangeItems, units, selectedRange);
 
   return {
     city: data.name,
@@ -47,8 +92,12 @@ function buildWeatherViewModel(data, units, extras = {}) {
     textColor: styles.text,
     selectedDate: extras.selectedDate || null,
     selectedDateLabel: extras.selectedDate ? formatDateLabel(extras.selectedDate) : null,
+    selectedRange,
+    selectedRangeLabel,
+    rangeItems,
+    basePath: extras.basePath || null,
     infoMessage: extras.infoMessage || null,
-    forecastMode: Boolean(extras.selectedDate),
+    forecastMode: Boolean(extras.selectedDate || selectedRangeLabel),
     githubRepoUrl: extras.githubRepoUrl || null,
   };
 }

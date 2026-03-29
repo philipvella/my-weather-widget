@@ -1,12 +1,16 @@
 const DEFAULT_MESSAGES = {
   invalidDate: 'That date format is invalid. Use YYYY-MM-DD. Showing live weather instead.',
   pastDate: 'That date has already passed. Showing live weather instead.',
+  invalidRange:
+    'Date range is invalid. Use from/to in YYYY-MM-DD format and ensure from is before to. Showing live weather instead.',
+  pastRange: 'That date range includes past dates. Showing live weather instead.',
   unavailableForecast: 'Unavailable, showing live.',
 };
 
 function createWeatherResolutionService({
   weatherService,
   parseDateQuery,
+  parseDateRangeQuery,
   messages = DEFAULT_MESSAGES,
 }) {
   async function resolveWithOptionalDate({ dateQuery, fetchCurrent, fetchForecast }) {
@@ -48,12 +52,73 @@ function createWeatherResolutionService({
     };
   }
 
+  async function resolveWithOptionalRange({ fromQuery, toQuery, fetchCurrent, fetchRange }) {
+    const parsedRange = parseDateRangeQuery(fromQuery, toQuery);
+
+    if (!parsedRange.hasRange) {
+      const data = await fetchCurrent();
+      return { data, selectedDate: null, selectedRange: null, rangeItems: null, infoMessage: null };
+    }
+
+    if (!parsedRange.isValid) {
+      const data = await fetchCurrent();
+      return {
+        data,
+        selectedDate: null,
+        selectedRange: { from: parsedRange.from, to: parsedRange.to },
+        rangeItems: null,
+        infoMessage: messages.invalidRange,
+      };
+    }
+
+    if (parsedRange.isPast || parsedRange.includesPast) {
+      const data = await fetchCurrent();
+      return {
+        data,
+        selectedDate: null,
+        selectedRange: { from: parsedRange.from, to: parsedRange.to },
+        rangeItems: null,
+        infoMessage: messages.pastRange,
+      };
+    }
+
+    const rangeItems = await fetchRange(parsedRange.from, parsedRange.to);
+    if (Array.isArray(rangeItems) && rangeItems.length > 0) {
+      return {
+        data: rangeItems[0],
+        selectedDate: null,
+        selectedRange: { from: parsedRange.from, to: parsedRange.to },
+        rangeItems,
+        infoMessage: null,
+      };
+    }
+
+    const data = await fetchCurrent();
+    return {
+      data,
+      selectedDate: null,
+      selectedRange: { from: parsedRange.from, to: parsedRange.to },
+      rangeItems: null,
+      infoMessage: messages.unavailableForecast,
+    };
+  }
+
   async function resolveByCity(city, units, dateQuery) {
     return resolveWithOptionalDate({
       dateQuery,
       fetchCurrent: () => weatherService.getWeatherByCity(city, units),
       fetchForecast: (normalizedDate) =>
         weatherService.getForecastByCityAndDate(city, normalizedDate, units),
+    });
+  }
+
+  async function resolveRangeByCity(city, units, fromQuery, toQuery) {
+    return resolveWithOptionalRange({
+      fromQuery,
+      toQuery,
+      fetchCurrent: () => weatherService.getWeatherByCity(city, units),
+      fetchRange: (fromDate, toDate) =>
+        weatherService.getForecastRangeByCity(city, fromDate, toDate, units),
     });
   }
 
@@ -66,7 +131,17 @@ function createWeatherResolutionService({
     });
   }
 
-  return { resolveByCity, resolveByCoordinates };
+  async function resolveRangeByCoordinates(lat, lon, units, fromQuery, toQuery) {
+    return resolveWithOptionalRange({
+      fromQuery,
+      toQuery,
+      fetchCurrent: () => weatherService.getWeatherByCoordinates(lat, lon, units),
+      fetchRange: (fromDate, toDate) =>
+        weatherService.getForecastRangeByCoordinates(lat, lon, fromDate, toDate, units),
+    });
+  }
+
+  return { resolveByCity, resolveByCoordinates, resolveRangeByCity, resolveRangeByCoordinates };
 }
 
 module.exports = { createWeatherResolutionService, DEFAULT_MESSAGES };

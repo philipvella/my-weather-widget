@@ -79,6 +79,8 @@ describe('weatherService', () => {
     expect(data).toEqual({
       name: 'Paris',
       sys: { country: 'FR' },
+      dt: Math.floor(new Date('2030-04-01T12:00:00.000Z').getTime() / 1000),
+      dt_txt: '2030-04-01 12:00:00',
       main: { temp: 20 },
       weather: [{ main: 'Clear', description: 'clear sky', icon: '01d' }],
       wind: { speed: 5 },
@@ -89,6 +91,52 @@ describe('weatherService', () => {
     expect(cacheSetSpy).toHaveBeenCalledWith(
       'forecast:city:paris:2030-04-01:metric',
       expect.any(Object),
+      600
+    );
+  });
+
+  it('returns normalized multi-day forecast range and caches it', async () => {
+    cacheGetSpy.mockResolvedValueOnce(null);
+    axiosGetSpy.mockResolvedValueOnce({
+      data: {
+        city: { name: 'Paris', country: 'FR' },
+        list: [
+          {
+            dt: Math.floor(new Date('2030-04-01T12:00:00.000Z').getTime() / 1000),
+            dt_txt: '2030-04-01 12:00:00',
+            main: { temp: 20 },
+            weather: [{ main: 'Clear', description: 'clear sky', icon: '01d' }],
+            wind: { speed: 5 },
+            pop: 0.4,
+          },
+          {
+            dt: Math.floor(new Date('2030-04-02T12:00:00.000Z').getTime() / 1000),
+            dt_txt: '2030-04-02 12:00:00',
+            main: { temp: 22 },
+            weather: [{ main: 'Clouds', description: 'few clouds', icon: '02d' }],
+            wind: { speed: 4 },
+            pop: 0.2,
+          },
+        ],
+      },
+    });
+
+    const data = await weatherService.getForecastRangeByCity(
+      'Paris',
+      '2030-04-01',
+      '2030-04-03',
+      'metric'
+    );
+
+    expect(data).toHaveLength(2);
+    expect(data[0]).toMatchObject({
+      name: 'Paris',
+      sys: { country: 'FR' },
+      dt_txt: '2030-04-01 12:00:00',
+    });
+    expect(cacheSetSpy).toHaveBeenCalledWith(
+      'forecast-range:city:paris:2030-04-01:2030-04-03:metric',
+      expect.any(Array),
       600
     );
   });

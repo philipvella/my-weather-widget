@@ -62,6 +62,41 @@ describe('weather routes', () => {
     expect(res.body.locals.units).toBe('metric');
   });
 
+  it('renders city weather for from/to range query', async () => {
+    vi.spyOn(weatherService, 'getForecastRangeByCity').mockResolvedValueOnce([
+      {
+        name: 'London',
+        sys: { country: 'GB' },
+        dt_txt: '2099-04-01 12:00:00',
+        main: { temp: 12, feels_like: 10, humidity: 75 },
+        weather: [{ main: 'Clouds', description: 'few clouds', icon: '02d' }],
+        wind: { speed: 3 },
+        pop: 0.2,
+      },
+      {
+        name: 'London',
+        sys: { country: 'GB' },
+        dt_txt: '2099-04-02 12:00:00',
+        main: { temp: 14, feels_like: 12, humidity: 70 },
+        weather: [{ main: 'Clear', description: 'clear sky', icon: '01d' }],
+        wind: { speed: 2 },
+        pop: 0.1,
+      },
+    ]);
+
+    const res = await request(makeApp()).get('/city/london?from=2099-04-01&to=2099-04-03');
+
+    expect(res.status).toBe(200);
+    expect(weatherService.getForecastRangeByCity).toHaveBeenCalledWith(
+      'london',
+      '2099-04-01',
+      '2099-04-03',
+      'metric'
+    );
+    expect(res.body.locals.selectedRange).toEqual({ from: '2099-04-01', to: '2099-04-03' });
+    expect(res.body.locals.rangeItems.length).toBeGreaterThan(0);
+  });
+
   it('renders error page for city errors', async () => {
     vi.spyOn(weatherService, 'getWeatherByCity').mockRejectedValueOnce(
       Object.assign(new Error('city boom'), { status: 404 })

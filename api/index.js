@@ -36,7 +36,15 @@ app.use((req, res, next) => {
 
 // ── Routes ─────────────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.redirect('/city/london'));
-app.get('/demo', (req, res) => res.render('demo'));
+app.get('/demo', (req, res) => {
+  const todayUtc = new Date();
+  todayUtc.setUTCHours(0, 0, 0, 0);
+  const from = todayUtc.toISOString().slice(0, 10);
+  const toDate = new Date(todayUtc);
+  toDate.setUTCDate(toDate.getUTCDate() + 2);
+  const to = toDate.toISOString().slice(0, 10);
+  res.render('demo', { from, to });
+});
 app.use('/', weatherRouter);
 
 // ── 404 ────────────────────────────────────────────────────────────────────────
