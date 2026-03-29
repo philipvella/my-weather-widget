@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= city %><% if (country) { %>, <%= country %><% } %> — Weather</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/css/style.css" /></noscript>
 </head>
 <body class="m-0 bg-gradient-to-br <%= bgGradient %> min-h-screen overflow-y-auto">
   <div class="fixed bottom-1 right-1 z-20 flex items-center gap-1">
