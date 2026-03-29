@@ -223,15 +223,14 @@
         aria-label="Forecast range details"
         class="w-full max-w-3xl mt-1 flex flex-wrap items-center justify-center gap-1 landscape:justify-end landscape:gap-1"
       >
-        <% rangeItems.forEach((item) => { %> <% const dateHref = basePath && item.focusRange?.from
-        && item.focusRange?.to ?
-        `${basePath}?units=${units}&from=${item.focusRange.from}&to=${item.focusRange.to}` : null;
-        %>
+        <% rangeItems.forEach((item) => { %> <% const href = item.focusQuery ? basePath + '?units='
+        + units + '&' + item.focusQuery : '#'; %>
         <a
-          href="<%= dateHref || '#' %>"
-          class="rounded-md bg-black/15 border border-white/20 px-2 py-1 text-center min-w-20 no-underline text-inherit <%= dateHref ? 'hover:bg-black/25 transition-colors cursor-pointer' : 'pointer-events-none' %>"
-          title="Focus forecast on <%= item.dateLabel || item.date %>"
-          aria-label="Focus forecast on <%= item.dateLabel || item.date %>"
+          href="<%= href %>"
+          class="<%= item.chipClass %>"
+          title="<%= item.isActive ? 'Current focus' : 'Focus forecast on ' + (item.dateLabel || item.date) %>"
+          aria-label="<%= item.isActive ? 'Current focus: ' + (item.dateLabel || item.date) : 'Focus forecast on ' + (item.dateLabel || item.date) %>"
+          aria-current="<%= item.isActive %>"
         >
           <p class="text-xs opacity-80 truncate"><%= item.dateLabel || item.date %></p>
           <% if (item.icon) { %>

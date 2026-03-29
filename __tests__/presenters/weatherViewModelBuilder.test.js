@@ -79,20 +79,17 @@ describe('buildWeatherViewModel', () => {
       date: '2030-04-01',
       temperature: 12,
       unitSymbol: '°C',
-      focusRange: {
-        from: '2030-04-01',
-        to: '2030-04-03',
-      },
+      isActive: true,
+      chipClass: expect.stringContaining('bg-white/25'),
+      focusQuery: 'from=2030-04-01&to=2030-04-03',
+      focusRange: { from: '2030-04-01', to: '2030-04-03' },
     });
 
-    expect(vm.rangeItems[1].focusRange).toEqual({
-      from: '2030-04-02',
-      to: '2030-04-04',
-    });
+    expect(vm.rangeItems[1].isActive).toBe(false);
+    expect(vm.rangeItems[1].chipClass).toContain('bg-black/15');
+    expect(vm.rangeItems[1].focusQuery).toBe('from=2030-04-02&to=2030-04-04');
 
-    expect(vm.rangeItems[2].focusRange).toEqual({
-      from: '2030-04-03',
-      to: '2030-04-05',
-    });
+    expect(vm.rangeItems[2].isActive).toBe(false);
+    expect(vm.rangeItems[2].focusQuery).toBe('from=2030-04-03&to=2030-04-05');
   });
 });

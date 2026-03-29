@@ -47,21 +47,26 @@ function buildRangeItems(rangeItems, units, selectedRange) {
   const spanDays =
     fromDate && toDate ? Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1 : null;
 
-  return rangeItems.map((entry) => ({
-    date: typeof entry.dt_txt === 'string' ? entry.dt_txt.slice(0, 10) : null,
-    dateLabel: typeof entry.dt_txt === 'string' ? formatDateLabel(entry.dt_txt.slice(0, 10)) : null,
-    temperature: Math.round(entry.main.temp),
-    unitSymbol: getUnitSymbol(units),
-    icon: entry.weather?.[0]?.icon || null,
-    description: entry.weather?.[0]?.description || 'forecast',
-    focusRange:
-      spanDays && typeof entry.dt_txt === 'string'
-        ? {
-            from: entry.dt_txt.slice(0, 10),
-            to: addUtcDays(entry.dt_txt.slice(0, 10), spanDays - 1),
-          }
-        : null,
-  }));
+  return rangeItems.map((entry) => {
+    const date = typeof entry.dt_txt === 'string' ? entry.dt_txt.slice(0, 10) : null;
+    const isActive = date !== null && date === selectedRange?.from;
+    const focusFrom = spanDays && date ? date : null;
+    const focusTo = spanDays && date ? addUtcDays(date, spanDays - 1) : null;
+    return {
+      date,
+      dateLabel: date ? formatDateLabel(date) : null,
+      isActive,
+      chipClass: isActive
+        ? 'rounded-md border bg-white/25 border-white/70 ring-1 ring-white/60 font-semibold px-2 py-1 text-center min-w-20 no-underline text-inherit pointer-events-none'
+        : 'rounded-md border bg-black/15 border-white/20 px-2 py-1 text-center min-w-20 no-underline text-inherit hover:bg-black/25 cursor-pointer transition-colors',
+      temperature: Math.round(entry.main.temp),
+      unitSymbol: getUnitSymbol(units),
+      icon: entry.weather?.[0]?.icon || null,
+      description: entry.weather?.[0]?.description || 'forecast',
+      focusRange: focusFrom && focusTo ? { from: focusFrom, to: focusTo } : null,
+      focusQuery: focusFrom && focusTo ? `from=${focusFrom}&to=${focusTo}` : null,
+    };
+  });
 }
 
 function buildWeatherViewModel(data, units, extras = {}) {
