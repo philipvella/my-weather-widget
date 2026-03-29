@@ -1,1 +1,6 @@
 .env.dev
+node_modules/
+.env
+.env.local
+.vercel/
+.vercel
