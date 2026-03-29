@@ -41,7 +41,7 @@ Examples:
 | `OPENWEATHERMAP_API_KEY` | yes | OpenWeather API key |
 | `UPSTASH_REDIS_REST_URL` | prod yes | Added by Vercel Upstash integration |
 | `UPSTASH_REDIS_REST_TOKEN` | prod yes | Added by Vercel Upstash integration |
-| `GITHUB_REPO_URL` | optional | Shows GitHub icon badge (bottom-right) |
+| `GITHUB_REPO_URL` | optional | Shows a GitHub icon button (bottom-right, next to the open-in-new icon) |
 
 Copy `.env.example` to `.env.local` for local development.
 
@@ -79,4 +79,4 @@ vercel --prod
 - Stats show text labels on larger widths and icon labels on very narrow widths.
 - Precip chance may be `--` for live weather when API probability is unavailable.
 - Optional GitHub icon badge appears when `GITHUB_REPO_URL` is set.
-- Entire widget area is wrapped in a link that opens in a new tab.
+- Bottom-right action buttons: open-in-new-tab icon (always shown) + GitHub icon (when `GITHUB_REPO_URL` is set).
