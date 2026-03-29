@@ -3,6 +3,7 @@
 Server-side weather widget for Notion or any iframe host.
 
 - Express + EJS + Tailwind Play CDN
+- Express + EJS + Tailwind CSS (prebuilt local stylesheet)
 - OpenWeather current + forecast APIs
 - Upstash Redis cache with local `node-cache` fallback
 - Vercel-friendly serverless entrypoint
