@@ -12,10 +12,13 @@
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
     "dev": "npm run build:css && nodemon api/index.js",
     "start": "node api/index.js",
+    "start:test": "PORT=4173 node api/index.js",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "lighthouse:ci": "lhci autorun --config=.lighthouserc.cjs",
+    "quality:premerge": "npm run format:check && npm test && npm run build && LHCI_BASE_URL=http://localhost:4173 start-server-and-test start:test http://localhost:4173 \"npm run lighthouse:ci\""
   },
   "lint-staged": {
     "*.{js,cjs,mjs,json,md,css,ejs}": "prettier --write"
@@ -30,10 +33,12 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "nodemon": "^3.1.0",
     "prettier": "^3.6.2",
+    "start-server-and-test": "^2.0.4",
     "supertest": "^7.1.1",
     "tailwindcss": "^3.4.19",
     "vitest": "^3.2.4"
