@@ -39,34 +39,102 @@ function addUtcDays(dateValue, days) {
   return parsed.toISOString().slice(0, 10);
 }
 
-function buildRangeItems(rangeItems, units, selectedRange) {
-  if (!Array.isArray(rangeItems)) return [];
+function listDatesInRange(fromDate, toDate) {
+  const start = parseIsoDate(fromDate);
+  const end = parseIsoDate(toDate);
+  if (!start || !end || start.getTime() > end.getTime()) return [];
 
+  const dates = [];
+  const cursor = new Date(start);
+  while (cursor.getTime() <= end.getTime()) {
+    dates.push(cursor.toISOString().slice(0, 10));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  return dates;
+}
+
+function getChipClass(isActive, isPlaceholder) {
+  if (isActive) {
+    return 'rounded-md border bg-white/25 border-white/70 ring-1 ring-white/60 font-semibold px-2 py-2 text-center min-w-20 w-32 h-24 flex flex-col items-center justify-start no-underline text-inherit pointer-events-none';
+  }
+
+  if (isPlaceholder) {
+    return 'rounded-md border bg-black/10 border-white/20 opacity-90 px-2 py-2 text-center w-32 h-24 flex flex-col items-center justify-start no-underline text-inherit pointer-events-none';
+  }
+
+  return 'rounded-md border bg-black/15 border-white/20 px-2 py-2 text-center w-32 h-24 flex flex-col items-center justify-start no-underline text-inherit hover:bg-black/25 cursor-pointer transition-colors';
+}
+
+function getEntryDate(entry) {
+  if (typeof entry?.dt_txt !== 'string') return null;
+  return entry.dt_txt.slice(0, 10);
+}
+
+function buildRangeItem({ date, entry, units, selectedRange, spanDays, isPlaceholder }) {
+  const isActive = date !== null && date === selectedRange?.from;
+  const focusFrom = !isPlaceholder && spanDays && date ? date : null;
+  const focusTo = !isPlaceholder && spanDays && date ? addUtcDays(date, spanDays - 1) : null;
+
+  return {
+    date,
+    dateLabel: date ? formatDateLabel(date) : null,
+    isActive,
+    chipClass: getChipClass(isActive, isPlaceholder),
+    temperature: isPlaceholder ? null : Math.round(entry.main.temp),
+    unitSymbol: getUnitSymbol(units),
+    icon: isPlaceholder ? null : entry.weather?.[0]?.icon || null,
+    description: isPlaceholder
+      ? 'Too early to predict'
+      : entry.weather?.[0]?.description || 'forecast',
+    isPlaceholder,
+    focusRange: focusFrom && focusTo ? { from: focusFrom, to: focusTo } : null,
+    focusQuery: focusFrom && focusTo ? `from=${focusFrom}&to=${focusTo}` : null,
+  };
+}
+
+function buildRangeItems(rangeItems, units, selectedRange, showRangePlaceholders) {
   const fromDate = parseIsoDate(selectedRange?.from);
   const toDate = parseIsoDate(selectedRange?.to);
   const spanDays =
     fromDate && toDate ? Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1 : null;
 
-  return rangeItems.map((entry) => {
-    const date = typeof entry.dt_txt === 'string' ? entry.dt_txt.slice(0, 10) : null;
-    const isActive = date !== null && date === selectedRange?.from;
-    const focusFrom = spanDays && date ? date : null;
-    const focusTo = spanDays && date ? addUtcDays(date, spanDays - 1) : null;
-    return {
-      date,
-      dateLabel: date ? formatDateLabel(date) : null,
-      isActive,
-      chipClass: isActive
-        ? 'rounded-md border bg-white/25 border-white/70 ring-1 ring-white/60 font-semibold px-2 py-1 text-center min-w-20 no-underline text-inherit pointer-events-none'
-        : 'rounded-md border bg-black/15 border-white/20 px-2 py-1 text-center min-w-20 no-underline text-inherit hover:bg-black/25 cursor-pointer transition-colors',
-      temperature: Math.round(entry.main.temp),
-      unitSymbol: getUnitSymbol(units),
-      icon: entry.weather?.[0]?.icon || null,
-      description: entry.weather?.[0]?.description || 'forecast',
-      focusRange: focusFrom && focusTo ? { from: focusFrom, to: focusTo } : null,
-      focusQuery: focusFrom && focusTo ? `from=${focusFrom}&to=${focusTo}` : null,
-    };
-  });
+  const hasRangeData = Array.isArray(rangeItems) && rangeItems.length > 0;
+  const requestedDates =
+    selectedRange?.from && selectedRange?.to
+      ? listDatesInRange(selectedRange.from, selectedRange.to)
+      : [];
+
+  if (requestedDates.length > 0 && (hasRangeData || showRangePlaceholders)) {
+    const entriesByDate = new Map(
+      (rangeItems || [])
+        .map((entry) => [getEntryDate(entry), entry])
+        .filter(([date]) => Boolean(date))
+    );
+
+    return requestedDates.map((date) => {
+      const entry = entriesByDate.get(date);
+      const isPlaceholder = !entry;
+      return buildRangeItem({ date, entry, units, selectedRange, spanDays, isPlaceholder });
+    });
+  }
+
+  if (!hasRangeData) return [];
+
+  return rangeItems
+    .map((entry) => {
+      const date = getEntryDate(entry);
+      if (!date) return null;
+      return buildRangeItem({
+        date,
+        entry,
+        units,
+        selectedRange,
+        spanDays,
+        isPlaceholder: false,
+      });
+    })
+    .filter(Boolean);
 }
 
 function buildWeatherViewModel(data, units, extras = {}) {
@@ -77,7 +145,12 @@ function buildWeatherViewModel(data, units, extras = {}) {
     selectedRange?.from && selectedRange?.to
       ? `${formatDateLabel(selectedRange.from)} - ${formatDateLabel(selectedRange.to)}`
       : null;
-  const rangeItems = buildRangeItems(extras.rangeItems, units, selectedRange);
+  const rangeItems = buildRangeItems(
+    extras.rangeItems,
+    units,
+    selectedRange,
+    Boolean(extras.showRangePlaceholders)
+  );
 
   return {
     city: data.name,

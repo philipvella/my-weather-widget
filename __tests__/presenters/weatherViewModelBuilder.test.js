@@ -92,4 +92,54 @@ describe('buildWeatherViewModel', () => {
     expect(vm.rangeItems[2].isActive).toBe(false);
     expect(vm.rangeItems[2].focusQuery).toBe('from=2030-04-03&to=2030-04-05');
   });
+
+  it('builds placeholder range chips when multi-day forecast is unavailable', () => {
+    const vm = buildWeatherViewModel(sampleData, 'metric', {
+      selectedRange: { from: '2030-04-01', to: '2030-04-03' },
+      rangeItems: null,
+      showRangePlaceholders: true,
+      infoMessage: 'Unavailable, showing live.',
+    });
+
+    expect(vm.rangeItems).toHaveLength(3);
+    expect(vm.rangeItems[0]).toMatchObject({
+      date: '2030-04-01',
+      isActive: true,
+      isPlaceholder: true,
+      description: 'Too early to predict',
+      temperature: null,
+      focusQuery: null,
+    });
+    expect(vm.rangeItems[0].chipClass).toContain('pointer-events-none');
+    expect(vm.rangeItems[1].isPlaceholder).toBe(true);
+    expect(vm.rangeItems[1].focusQuery).toBe(null);
+    expect(vm.rangeItems[1].chipClass).toContain('pointer-events-none');
+    expect(vm.rangeItems[2].isPlaceholder).toBe(true);
+  });
+
+  it('keeps the full requested range length when data is partially available', () => {
+    const vm = buildWeatherViewModel(sampleData, 'metric', {
+      selectedRange: { from: '2030-04-01', to: '2030-04-03' },
+      rangeItems: [
+        {
+          ...sampleData,
+          dt_txt: '2030-04-01 12:00:00',
+        },
+        {
+          ...sampleData,
+          dt_txt: '2030-04-03 12:00:00',
+        },
+      ],
+    });
+
+    expect(vm.rangeItems).toHaveLength(3);
+    expect(vm.rangeItems[0].isPlaceholder).toBe(false);
+    expect(vm.rangeItems[1]).toMatchObject({
+      date: '2030-04-02',
+      isPlaceholder: true,
+      description: 'Too early to predict',
+      focusQuery: null,
+    });
+    expect(vm.rangeItems[2].isPlaceholder).toBe(false);
+  });
 });

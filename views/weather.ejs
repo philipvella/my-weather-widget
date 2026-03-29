@@ -236,18 +236,23 @@
           aria-current="<%= item.isActive %>"
         >
           <p class="text-xs opacity-80 truncate"><%= item.dateLabel || item.date %></p>
-          <% if (item.icon) { %>
-          <img
-            src="https://openweathermap.org/img/wn/<%= item.icon %>.png"
-            alt="<%= item.description %>"
-            loading="lazy"
-            decoding="async"
-            width="32"
-            height="32"
-            class="w-6 h-6 sm:w-8 sm:h-8 mx-auto"
-          />
-          <% } %>
-          <p class="text-sm font-medium"><%= item.temperature %><%= item.unitSymbol %></p>
+          <div class="flex-1 w-full flex flex-col items-center justify-center">
+            <% if (item.isPlaceholder) { %>
+            <p class="text-xs opacity-70 leading-tight text-center px-1">Too early to predict</p>
+            <% } else { %> <% if (item.icon) { %>
+            <img
+              src="https://openweathermap.org/img/wn/<%= item.icon %>.png"
+              alt="<%= item.description %>"
+              loading="lazy"
+              decoding="async"
+              width="32"
+              height="32"
+              class="w-6 h-6 sm:w-8 sm:h-8 mx-auto"
+            />
+            <% } %> <% if (item.temperature !== null) { %>
+            <p class="text-sm font-medium"><%= item.temperature %><%= item.unitSymbol %></p>
+            <% } %> <% } %>
+          </div>
         </a>
         <% }) %>
       </section>

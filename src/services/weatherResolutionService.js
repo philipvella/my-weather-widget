@@ -57,7 +57,14 @@ function createWeatherResolutionService({
 
     if (!parsedRange.hasRange) {
       const data = await fetchCurrent();
-      return { data, selectedDate: null, selectedRange: null, rangeItems: null, infoMessage: null };
+      return {
+        data,
+        selectedDate: null,
+        selectedRange: null,
+        rangeItems: null,
+        showRangePlaceholders: false,
+        infoMessage: null,
+      };
     }
 
     if (!parsedRange.isValid) {
@@ -67,6 +74,7 @@ function createWeatherResolutionService({
         selectedDate: null,
         selectedRange: { from: parsedRange.from, to: parsedRange.to },
         rangeItems: null,
+        showRangePlaceholders: false,
         infoMessage: messages.invalidRange,
       };
     }
@@ -78,6 +86,7 @@ function createWeatherResolutionService({
         selectedDate: null,
         selectedRange: { from: parsedRange.from, to: parsedRange.to },
         rangeItems: null,
+        showRangePlaceholders: false,
         infoMessage: messages.pastRange,
       };
     }
@@ -89,6 +98,7 @@ function createWeatherResolutionService({
         selectedDate: null,
         selectedRange: { from: parsedRange.from, to: parsedRange.to },
         rangeItems,
+        showRangePlaceholders: false,
         infoMessage: null,
       };
     }
@@ -99,6 +109,7 @@ function createWeatherResolutionService({
       selectedDate: null,
       selectedRange: { from: parsedRange.from, to: parsedRange.to },
       rangeItems: null,
+      showRangePlaceholders: true,
       infoMessage: messages.unavailableForecast,
     };
   }
