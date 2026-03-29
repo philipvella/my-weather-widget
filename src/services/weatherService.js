@@ -82,6 +82,9 @@ function normalizeForecastEntry(entry, cityMeta) {
     main: entry.main,
     weather: entry.weather,
     wind: entry.wind,
+    pop: entry.pop,
+    rain: entry.rain,
+    snow: entry.snow,
   };
 }
 

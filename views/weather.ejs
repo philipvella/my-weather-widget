@@ -47,16 +47,29 @@
     <!-- Extra stats -->
     <section
       aria-label="Weather details"
-      class="flex gap-10 mt-2 text-center"
+      class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-2 text-center"
     >
       <div>
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Humidity</p>
         <p class="text-xl font-medium"><%= humidity %>%</p>
       </div>
-      <div class="border-l border-current opacity-20 self-stretch"></div>
       <div>
         <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Wind</p>
         <p class="text-xl font-medium"><%= windSpeed %> <span class="text-sm font-normal"><%= windUnit %></span></p>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Precip chance</p>
+        <p class="text-xl font-medium">
+          <% if (precipitationChance === null) { %>
+            --
+          <% } else { %>
+            <%= precipitationChance %>%
+          <% } %>
+        </p>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-widest opacity-50 mb-1">Precip amount</p>
+        <p class="text-xl font-medium"><%= precipitationAmountMm.toFixed(1) %> <span class="text-sm font-normal">mm</span></p>
       </div>
     </section>
 

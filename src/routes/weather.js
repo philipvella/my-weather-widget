@@ -11,6 +11,17 @@ const {
 
 function buildViewData(data, units, extras = {}) {
   const styles = getConditionStyles(data.weather[0].main);
+  const rainAmount = typeof data.rain?.['1h'] === 'number'
+    ? data.rain['1h']
+    : (typeof data.rain?.['3h'] === 'number' ? data.rain['3h'] : 0);
+  const snowAmount = typeof data.snow?.['1h'] === 'number'
+    ? data.snow['1h']
+    : (typeof data.snow?.['3h'] === 'number' ? data.snow['3h'] : 0);
+  const precipitationAmountMm = Math.round((rainAmount + snowAmount) * 10) / 10;
+  const precipitationChance = typeof data.pop === 'number'
+    ? Math.round(data.pop * 100)
+    : null;
+
   return {
     city:          data.name,
     country:       data.sys.country,
@@ -20,6 +31,8 @@ function buildViewData(data, units, extras = {}) {
     icon:          data.weather[0].icon,
     humidity:      data.main.humidity,
     windSpeed:     Math.round(data.wind.speed),
+    precipitationChance,
+    precipitationAmountMm,
     units,
     unitSymbol:    getUnitSymbol(units),
     windUnit:      getWindUnit(units),

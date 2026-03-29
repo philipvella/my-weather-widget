@@ -114,7 +114,8 @@ Example URL: `https://your-deployment.vercel.app/london`
 ## UI
 
 - Background gradient changes with weather condition (sunny → amber/sky, rainy → blue/slate, snow → light blue, storm → purple/dark, clouds → slate, fog → grey)
-- Displays: temperature, "feels like", weather description, icon (OpenWeatherMap CDN), humidity, wind speed
+- Displays: temperature, "feels like", weather description, icon (OpenWeatherMap CDN), humidity, wind speed, precipitation chance, precipitation amount
+- Precipitation chance is shown when available from forecast data; live weather may show `--` when the API does not provide probability
 - Fully responsive; works at any iframe size
 - Accessible semantic HTML with ARIA labels and alt text
 - Error state shown when the city is not found or the API is unreachable
