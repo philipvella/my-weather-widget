@@ -4,7 +4,7 @@ const NodeCache = require('node-cache');
 const localCache = new NodeCache({ stdTTL: 600 });
 
 function getRedis() {
-  const url   = process.env.UPSTASH_REDIS_REST_URL;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   const { Redis } = require('@upstash/redis');

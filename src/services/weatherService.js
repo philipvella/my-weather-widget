@@ -49,12 +49,16 @@ async function fetchWeatherFromApi(endpoint, params, label) {
 
 async function getWeatherByCity(city, units = 'metric') {
   const cacheKey = `weather:city:${city.toLowerCase()}:${units}`;
-  return getOrSetCache(cacheKey, () => fetchWeatherFromApi(API_ENDPOINTS.current, { q: city, units }, city));
+  return getOrSetCache(cacheKey, () =>
+    fetchWeatherFromApi(API_ENDPOINTS.current, { q: city, units }, city)
+  );
 }
 
 async function getWeatherByCoordinates(lat, lon, units = 'metric') {
   const cacheKey = `weather:coord:${lat}:${lon}:${units}`;
-  return getOrSetCache(cacheKey, () => fetchWeatherFromApi(API_ENDPOINTS.current, { lat, lon, units }, `${lat}, ${lon}`));
+  return getOrSetCache(cacheKey, () =>
+    fetchWeatherFromApi(API_ENDPOINTS.current, { lat, lon, units }, `${lat}, ${lon}`)
+  );
 }
 
 function selectForecastForDate(entries, dateQuery) {
@@ -102,7 +106,11 @@ async function getForecastByCityAndDate(city, dateQuery, units = 'metric') {
 async function getForecastByCoordinatesAndDate(lat, lon, dateQuery, units = 'metric') {
   const cacheKey = `forecast:coord:${lat}:${lon}:${dateQuery}:${units}`;
   return getOrSetCache(cacheKey, async () => {
-    const data = await fetchWeatherFromApi(API_ENDPOINTS.forecast, { lat, lon, units }, `${lat}, ${lon}`);
+    const data = await fetchWeatherFromApi(
+      API_ENDPOINTS.forecast,
+      { lat, lon, units },
+      `${lat}, ${lon}`
+    );
     const selected = selectForecastForDate(data.list, dateQuery);
     if (!selected) return null;
     return normalizeForecastEntry(selected, data.city);
@@ -115,4 +123,3 @@ module.exports = {
   getForecastByCityAndDate,
   getForecastByCoordinatesAndDate,
 };
-

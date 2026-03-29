@@ -3,9 +3,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-const express    = require('express');
-const path       = require('path');
-const rateLimit  = require('express-rate-limit');
+const express = require('express');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
 const weatherRouter = require('../src/routes/weather');
 
 const app = express();
@@ -18,17 +18,19 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(express.static(path.join(__dirname, '../public')));
 
 // ── Rate limiting ──────────────────────────────────────────────────────────────
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-}));
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 
 // ── Notion / iframe embedding headers ─────────────────────────────────────────
 app.use((req, res, next) => {
   res.removeHeader('X-Frame-Options');
-  res.setHeader('Content-Security-Policy', "frame-ancestors *");
+  res.setHeader('Content-Security-Policy', 'frame-ancestors *');
   next();
 });
 
@@ -56,4 +58,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-

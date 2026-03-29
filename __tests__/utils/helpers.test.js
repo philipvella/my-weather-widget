@@ -9,9 +9,18 @@ import {
 
 describe('helpers', () => {
   it('maps condition styles including atmosphere and fallback', () => {
-    expect(getConditionStyles('Rain')).toEqual({ bg: 'from-blue-500 to-slate-700', text: 'text-white' });
-    expect(getConditionStyles('Fog')).toEqual({ bg: 'from-slate-300 to-slate-500', text: 'text-slate-800' });
-    expect(getConditionStyles('Unknown')).toEqual({ bg: 'from-sky-400 to-blue-600', text: 'text-white' });
+    expect(getConditionStyles('Rain')).toEqual({
+      bg: 'from-blue-500 to-slate-700',
+      text: 'text-white',
+    });
+    expect(getConditionStyles('Fog')).toEqual({
+      bg: 'from-slate-300 to-slate-500',
+      text: 'text-slate-800',
+    });
+    expect(getConditionStyles('Unknown')).toEqual({
+      bg: 'from-sky-400 to-blue-600',
+      text: 'text-white',
+    });
   });
 
   it('returns correct unit symbols', () => {
@@ -41,4 +50,3 @@ describe('helpers', () => {
     expect(formatDateLabel(null)).toBe(null);
   });
 });
-

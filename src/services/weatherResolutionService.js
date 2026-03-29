@@ -4,7 +4,11 @@ const DEFAULT_MESSAGES = {
   unavailableForecast: 'Unavailable, showing live.',
 };
 
-function createWeatherResolutionService({ weatherService, parseDateQuery, messages = DEFAULT_MESSAGES }) {
+function createWeatherResolutionService({
+  weatherService,
+  parseDateQuery,
+  messages = DEFAULT_MESSAGES,
+}) {
   async function resolveWithOptionalDate({ dateQuery, fetchCurrent, fetchForecast }) {
     const parsedDate = parseDateQuery(dateQuery);
 
@@ -48,7 +52,8 @@ function createWeatherResolutionService({ weatherService, parseDateQuery, messag
     return resolveWithOptionalDate({
       dateQuery,
       fetchCurrent: () => weatherService.getWeatherByCity(city, units),
-      fetchForecast: (normalizedDate) => weatherService.getForecastByCityAndDate(city, normalizedDate, units),
+      fetchForecast: (normalizedDate) =>
+        weatherService.getForecastByCityAndDate(city, normalizedDate, units),
     });
   }
 
@@ -56,7 +61,8 @@ function createWeatherResolutionService({ weatherService, parseDateQuery, messag
     return resolveWithOptionalDate({
       dateQuery,
       fetchCurrent: () => weatherService.getWeatherByCoordinates(lat, lon, units),
-      fetchForecast: (normalizedDate) => weatherService.getForecastByCoordinatesAndDate(lat, lon, normalizedDate, units),
+      fetchForecast: (normalizedDate) =>
+        weatherService.getForecastByCoordinatesAndDate(lat, lon, normalizedDate, units),
     });
   }
 
@@ -64,4 +70,3 @@ function createWeatherResolutionService({ weatherService, parseDateQuery, messag
 }
 
 module.exports = { createWeatherResolutionService, DEFAULT_MESSAGES };
-

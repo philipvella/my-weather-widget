@@ -36,7 +36,11 @@ describe('weather routes', () => {
     const res = await request(makeApp()).get('/city/london?units=imperial&date=2099-04-01');
 
     expect(res.status).toBe(200);
-    expect(weatherService.getForecastByCityAndDate).toHaveBeenCalledWith('london', '2099-04-01', 'imperial');
+    expect(weatherService.getForecastByCityAndDate).toHaveBeenCalledWith(
+      'london',
+      '2099-04-01',
+      'imperial'
+    );
     expect(res.body.view).toBe('weather');
     expect(res.body.locals.units).toBe('imperial');
     expect(res.body.locals.selectedDate).toBe('2099-04-01');
@@ -59,7 +63,9 @@ describe('weather routes', () => {
   });
 
   it('renders error page for city errors', async () => {
-    vi.spyOn(weatherService, 'getWeatherByCity').mockRejectedValueOnce(Object.assign(new Error('city boom'), { status: 404 }));
+    vi.spyOn(weatherService, 'getWeatherByCity').mockRejectedValueOnce(
+      Object.assign(new Error('city boom'), { status: 404 })
+    );
 
     const res = await request(makeApp()).get('/city/unknown');
 
@@ -80,12 +86,18 @@ describe('weather routes', () => {
     const res = await request(makeApp()).get('/coordinates/50.447/5.962');
 
     expect(res.status).toBe(200);
-    expect(weatherService.getWeatherByCoordinates).toHaveBeenCalledWith('50.447', '5.962', 'metric');
+    expect(weatherService.getWeatherByCoordinates).toHaveBeenCalledWith(
+      '50.447',
+      '5.962',
+      'metric'
+    );
     expect(res.body.view).toBe('weather');
   });
 
   it('renders error page for coordinate errors', async () => {
-    vi.spyOn(weatherService, 'getWeatherByCoordinates').mockRejectedValueOnce(Object.assign(new Error('coord boom'), { status: 500 }));
+    vi.spyOn(weatherService, 'getWeatherByCoordinates').mockRejectedValueOnce(
+      Object.assign(new Error('coord boom'), { status: 500 })
+    );
 
     const res = await request(makeApp()).get('/coordinates/0/0');
 
@@ -94,5 +106,3 @@ describe('weather routes', () => {
     expect(res.body.locals).toEqual({ message: 'coord boom', location: '0, 0' });
   });
 });
-
-

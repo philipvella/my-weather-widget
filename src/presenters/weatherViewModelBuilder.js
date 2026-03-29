@@ -6,17 +6,21 @@ const {
 } = require('../utils/helpers');
 
 function extractPrecipitation(data) {
-  const rainAmount = typeof data.rain?.['1h'] === 'number'
-    ? data.rain['1h']
-    : (typeof data.rain?.['3h'] === 'number' ? data.rain['3h'] : 0);
-  const snowAmount = typeof data.snow?.['1h'] === 'number'
-    ? data.snow['1h']
-    : (typeof data.snow?.['3h'] === 'number' ? data.snow['3h'] : 0);
+  const rainAmount =
+    typeof data.rain?.['1h'] === 'number'
+      ? data.rain['1h']
+      : typeof data.rain?.['3h'] === 'number'
+        ? data.rain['3h']
+        : 0;
+  const snowAmount =
+    typeof data.snow?.['1h'] === 'number'
+      ? data.snow['1h']
+      : typeof data.snow?.['3h'] === 'number'
+        ? data.snow['3h']
+        : 0;
 
   const precipitationAmountMm = Math.round((rainAmount + snowAmount) * 10) / 10;
-  const precipitationChance = typeof data.pop === 'number'
-    ? Math.round(data.pop * 100)
-    : null;
+  const precipitationChance = typeof data.pop === 'number' ? Math.round(data.pop * 100) : null;
 
   return { precipitationAmountMm, precipitationChance };
 }
@@ -50,4 +54,3 @@ function buildWeatherViewModel(data, units, extras = {}) {
 }
 
 module.exports = { buildWeatherViewModel };
-

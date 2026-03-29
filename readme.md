@@ -9,19 +9,19 @@ Server-side weather widget for Notion or any iframe host.
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/` | Redirects to `/city/london` |
-| `/demo` | Live embed demo showing the widget at common iframe sizes |
-| `/city/:city` | Weather by city, e.g. `/city/paris` |
-| `/coordinates/:lat/:lon` | Weather by coordinates, e.g. `/coordinates/50.447/5.962` |
+| Route                    | Description                                               |
+| ------------------------ | --------------------------------------------------------- |
+| `/`                      | Redirects to `/city/london`                               |
+| `/demo`                  | Live embed demo showing the widget at common iframe sizes |
+| `/city/:city`            | Weather by city, e.g. `/city/paris`                       |
+| `/coordinates/:lat/:lon` | Weather by coordinates, e.g. `/coordinates/50.447/5.962`  |
 
 ### Query params
 
-| Param | Values | Default |
-|---|---|---|
+| Param   | Values                 | Default  |
+| ------- | ---------------------- | -------- |
 | `units` | `metric` or `imperial` | `metric` |
-| `date` | `YYYY-MM-DD` | none |
+| `date`  | `YYYY-MM-DD`           | none     |
 
 Examples:
 
@@ -37,12 +37,12 @@ Examples:
 
 ## Environment variables
 
-| Variable | Required | Notes |
-|---|---|---|
-| `OPENWEATHERMAP_API_KEY` | yes | OpenWeather API key |
-| `UPSTASH_REDIS_REST_URL` | prod yes | Added by Vercel Upstash integration |
-| `UPSTASH_REDIS_REST_TOKEN` | prod yes | Added by Vercel Upstash integration |
-| `GITHUB_REPO_URL` | optional | Shows a GitHub icon button (bottom-right, next to the open-in-new icon) |
+| Variable                   | Required | Notes                                                                   |
+| -------------------------- | -------- | ----------------------------------------------------------------------- |
+| `OPENWEATHERMAP_API_KEY`   | yes      | OpenWeather API key                                                     |
+| `UPSTASH_REDIS_REST_URL`   | prod yes | Added by Vercel Upstash integration                                     |
+| `UPSTASH_REDIS_REST_TOKEN` | prod yes | Added by Vercel Upstash integration                                     |
+| `GITHUB_REPO_URL`          | optional | Shows a GitHub icon button (bottom-right, next to the open-in-new icon) |
 
 Copy `.env.example` to `.env.local` for local development.
 
@@ -74,6 +74,21 @@ Watch mode:
 
 ```bash
 npm run test:watch
+```
+
+## Formatting
+
+This repo uses Prettier with Husky + lint-staged so staged files are auto-formatted on commit.
+
+```bash
+npm run format
+npm run format:check
+```
+
+If hooks are missing locally, run:
+
+```bash
+npm run prepare
 ```
 
 ## Deploy (Vercel)

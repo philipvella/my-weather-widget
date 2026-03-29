@@ -51,4 +51,3 @@ describe('buildWeatherViewModel', () => {
     expect(vm.windUnit).toBe('mph');
   });
 });
-

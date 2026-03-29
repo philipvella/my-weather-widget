@@ -6,13 +6,19 @@
     "node": ">=18.x"
   },
   "scripts": {
+    "prepare": "husky",
     "build": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
     "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
     "dev": "npm run build:css && nodemon api/index.js",
     "start": "node api/index.js",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "lint-staged": {
+    "*.{js,cjs,mjs,json,md,css,ejs}": "prettier --write"
   },
   "dependencies": {
     "@upstash/redis": "^1.37.0",
@@ -24,7 +30,10 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
     "nodemon": "^3.1.0",
+    "prettier": "^3.6.2",
     "supertest": "^7.1.1",
     "tailwindcss": "^3.4.19",
     "vitest": "^3.2.4"

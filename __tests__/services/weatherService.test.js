@@ -39,10 +39,9 @@ describe('weatherService', () => {
     const data = await weatherService.getWeatherByCity('Paris', 'imperial');
 
     expect(data).toEqual(apiData);
-    expect(axiosGetSpy).toHaveBeenCalledWith(
-      'https://api.openweathermap.org/data/2.5/weather',
-      { params: { q: 'Paris', units: 'imperial', appid: 'test-key' } }
-    );
+    expect(axiosGetSpy).toHaveBeenCalledWith('https://api.openweathermap.org/data/2.5/weather', {
+      params: { q: 'Paris', units: 'imperial', appid: 'test-key' },
+    });
     expect(cacheSetSpy).toHaveBeenCalledWith('weather:city:paris:imperial', apiData, 600);
   });
 
@@ -94,4 +93,3 @@ describe('weatherService', () => {
     );
   });
 });
-

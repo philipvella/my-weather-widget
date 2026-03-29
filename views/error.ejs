@@ -1,28 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Weather widget error page shown when weather data cannot be loaded for the requested location." />
-  <title>Weather — Error</title>
-  <link rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="/css/style.css" /></noscript>
-  <style>* { box-sizing: border-box; } body { margin: 0; }</style>
-</head>
-<body class="bg-gradient-to-br from-slate-700 to-slate-900 min-h-screen">
-  <main
-    role="main"
-    class="min-h-screen flex flex-col items-center justify-center p-6 text-white text-center"
-  >
-    <div role="img" aria-label="Weather unavailable" class="text-6xl mb-4">⛅</div>
-    <h1 class="text-2xl font-semibold mb-2">Unable to fetch weather data</h1>
-    <% if (message) { %>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Weather widget error page shown when weather data cannot be loaded for the requested location."
+    />
+    <title>Weather — Error</title>
+    <link
+      rel="preload"
+      href="/css/style.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript><link rel="stylesheet" href="/css/style.css" /></noscript>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-slate-700 to-slate-900 min-h-screen">
+    <main
+      role="main"
+      class="min-h-screen flex flex-col items-center justify-center p-6 text-white text-center"
+    >
+      <div role="img" aria-label="Weather unavailable" class="text-6xl mb-4">⛅</div>
+      <h1 class="text-2xl font-semibold mb-2">Unable to fetch weather data</h1>
+      <% if (message) { %>
       <p class="text-slate-300 mb-4 max-w-sm"><%= message %></p>
-    <% } %>
-    <% if (location) { %>
-      <p class="text-slate-500 text-sm">Location: <span class="text-slate-400"><%= location %></span></p>
-    <% } %>
-  </main>
-</body>
+      <% } %> <% if (location) { %>
+      <p class="text-slate-500 text-sm">
+        Location: <span class="text-slate-400"><%= location %></span>
+      </p>
+      <% } %>
+    </main>
+  </body>
 </html>
-

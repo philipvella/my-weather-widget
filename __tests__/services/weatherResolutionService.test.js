@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createWeatherResolutionService, DEFAULT_MESSAGES } from '../../src/services/weatherResolutionService';
+import {
+  createWeatherResolutionService,
+  DEFAULT_MESSAGES,
+} from '../../src/services/weatherResolutionService';
 
 describe('weatherResolutionService', () => {
   function makeService(parseResult, forecastResult = null) {
@@ -17,11 +20,19 @@ describe('weatherResolutionService', () => {
   }
 
   it('returns current weather when date is not provided', async () => {
-    const { service, weatherService } = makeService({ dateQuery: null, isValid: true, isPast: false });
+    const { service, weatherService } = makeService({
+      dateQuery: null,
+      isValid: true,
+      isPast: false,
+    });
 
     const result = await service.resolveByCity('paris', 'metric', null);
 
-    expect(result).toEqual({ data: { source: 'current-city' }, selectedDate: null, infoMessage: null });
+    expect(result).toEqual({
+      data: { source: 'current-city' },
+      selectedDate: null,
+      infoMessage: null,
+    });
     expect(weatherService.getWeatherByCity).toHaveBeenCalledWith('paris', 'metric');
     expect(weatherService.getForecastByCityAndDate).not.toHaveBeenCalled();
   });
@@ -57,8 +68,16 @@ describe('weatherResolutionService', () => {
 
     const result = await service.resolveByCity('london', 'imperial', parsed.dateQuery);
 
-    expect(result).toEqual({ data: forecastData, selectedDate: parsed.dateQuery, infoMessage: null });
-    expect(weatherService.getForecastByCityAndDate).toHaveBeenCalledWith('london', parsed.dateQuery, 'imperial');
+    expect(result).toEqual({
+      data: forecastData,
+      selectedDate: parsed.dateQuery,
+      infoMessage: null,
+    });
+    expect(weatherService.getForecastByCityAndDate).toHaveBeenCalledWith(
+      'london',
+      parsed.dateQuery,
+      'imperial'
+    );
     expect(weatherService.getWeatherByCity).not.toHaveBeenCalled();
   });
 
@@ -74,4 +93,3 @@ describe('weatherResolutionService', () => {
     expect(weatherService.getWeatherByCity).toHaveBeenCalledTimes(1);
   });
 });
-

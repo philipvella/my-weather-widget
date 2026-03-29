@@ -1,5 +1,5 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const weatherService = require('../services/weatherService');
 const { parseDateQuery } = require('../utils/helpers');
 const { createWeatherResolutionService } = require('../services/weatherResolutionService');
@@ -18,11 +18,14 @@ router.get('/coordinates/:lat/:lon', async (req, res) => {
 
   try {
     const result = await weatherResolutionService.resolveByCoordinates(lat, lon, units, dateQuery);
-    res.render('weather', buildWeatherViewModel(result.data, units, {
-      selectedDate: result.selectedDate,
-      infoMessage: result.infoMessage,
-      githubRepoUrl: process.env.GITHUB_REPO_URL || null,
-    }));
+    res.render(
+      'weather',
+      buildWeatherViewModel(result.data, units, {
+        selectedDate: result.selectedDate,
+        infoMessage: result.infoMessage,
+        githubRepoUrl: process.env.GITHUB_REPO_URL || null,
+      })
+    );
   } catch (err) {
     console.error('[route] coordinate error:', err.message);
     res.status(err.status || 500).render('error', {
@@ -40,11 +43,14 @@ router.get('/city/:city', async (req, res) => {
 
   try {
     const result = await weatherResolutionService.resolveByCity(city, units, dateQuery);
-    res.render('weather', buildWeatherViewModel(result.data, units, {
-      selectedDate: result.selectedDate,
-      infoMessage: result.infoMessage,
-      githubRepoUrl: process.env.GITHUB_REPO_URL || null,
-    }));
+    res.render(
+      'weather',
+      buildWeatherViewModel(result.data, units, {
+        selectedDate: result.selectedDate,
+        infoMessage: result.infoMessage,
+        githubRepoUrl: process.env.GITHUB_REPO_URL || null,
+      })
+    );
   } catch (err) {
     console.error('[route] city error:', err.message);
     res.status(err.status || 500).render('error', {
@@ -55,4 +61,3 @@ router.get('/city/:city', async (req, res) => {
 });
 
 module.exports = router;
-

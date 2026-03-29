@@ -1,93 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Interactive demo page showing the weather widget embedded at common iframe sizes and layouts." />
-  <title>Weather Widget — Demo</title>
-  <link rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="/css/style.css" /></noscript>
-</head>
-<body class="bg-gray-950 text-gray-100 min-h-screen p-6 sm:p-10 font-sans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive demo page showing the weather widget embedded at common iframe sizes and layouts."
+    />
+    <title>Weather Widget — Demo</title>
+    <link
+      rel="preload"
+      href="/css/style.css"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript><link rel="stylesheet" href="/css/style.css" /></noscript>
+  </head>
+  <body class="bg-gray-950 text-gray-100 min-h-screen p-6 sm:p-10 font-sans">
+    <div class="max-w-4xl mx-auto space-y-12">
+      <header>
+        <h1 class="text-2xl font-bold tracking-tight">Weather Widget — Embed Demo</h1>
+        <p class="text-gray-400 mt-1 text-sm">
+          Shows how the widget looks at common embed sizes. All iframes use the live widget from
+          this server.
+        </p>
+      </header>
 
-  <div class="max-w-4xl mx-auto space-y-12">
+      <!-- Wide banner (Notion full-width embed) -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">
+          Wide banner — 800 × 160
+        </h2>
+        <iframe
+          src="/city/london"
+          width="800"
+          height="160"
+          frameborder="0"
+          class="rounded-lg overflow-hidden w-full max-w-3xl block"
+          title="London weather — wide"
+        ></iframe>
+      </section>
 
-    <header>
-      <h1 class="text-2xl font-bold tracking-tight">Weather Widget — Embed Demo</h1>
-      <p class="text-gray-400 mt-1 text-sm">Shows how the widget looks at common embed sizes. All iframes use the live widget from this server.</p>
-    </header>
+      <!-- Compact strip (short landscape) -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">
+          Compact strip — 388 × 100
+        </h2>
+        <iframe
+          src="/city/paris"
+          width="388"
+          height="100"
+          frameborder="0"
+          class="rounded-lg overflow-hidden block"
+          title="Paris weather — compact strip"
+        ></iframe>
+      </section>
 
-    <!-- Wide banner (Notion full-width embed) -->
-    <section>
-      <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Wide banner — 800 × 160</h2>
-      <iframe
-        src="/city/london"
-        width="800"
-        height="160"
-        frameborder="0"
-        class="rounded-lg overflow-hidden w-full max-w-3xl block"
-        title="London weather — wide"
-      ></iframe>
-    </section>
+      <!-- Square card -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">
+          Square card — 300 × 300
+        </h2>
+        <iframe
+          src="/city/tokyo"
+          width="300"
+          height="300"
+          frameborder="0"
+          class="rounded-lg overflow-hidden block"
+          title="Tokyo weather — square"
+        ></iframe>
+      </section>
 
-    <!-- Compact strip (short landscape) -->
-    <section>
-      <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Compact strip — 388 × 100</h2>
-      <iframe
-        src="/city/paris"
-        width="388"
-        height="100"
-        frameborder="0"
-        class="rounded-lg overflow-hidden block"
-        title="Paris weather — compact strip"
-      ></iframe>
-    </section>
+      <!-- Tall portrait (mobile column) -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Portrait — 360 × 480</h2>
+        <iframe
+          src="/city/new york?units=imperial"
+          width="360"
+          height="480"
+          frameborder="0"
+          class="rounded-lg overflow-hidden block"
+          title="New York weather — portrait"
+        ></iframe>
+      </section>
 
-    <!-- Square card -->
-    <section>
-      <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Square card — 300 × 300</h2>
-      <iframe
-        src="/city/tokyo"
-        width="300"
-        height="300"
-        frameborder="0"
-        class="rounded-lg overflow-hidden block"
-        title="Tokyo weather — square"
-      ></iframe>
-    </section>
+      <!-- Coordinates -->
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">
+          Coordinates — 500 × 180
+        </h2>
+        <iframe
+          src="/coordinates/48.8566/2.3522"
+          width="500"
+          height="180"
+          frameborder="0"
+          class="rounded-lg overflow-hidden block"
+          title="Paris by coordinates"
+        ></iframe>
+      </section>
 
-    <!-- Tall portrait (mobile column) -->
-    <section>
-      <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Portrait — 360 × 480</h2>
-      <iframe
-        src="/city/new york?units=imperial"
-        width="360"
-        height="480"
-        frameborder="0"
-        class="rounded-lg overflow-hidden block"
-        title="New York weather — portrait"
-      ></iframe>
-    </section>
-
-
-    <!-- Coordinates -->
-    <section>
-      <h2 class="text-sm uppercase tracking-widest text-gray-500 mb-2">Coordinates — 500 × 180</h2>
-      <iframe
-        src="/coordinates/48.8566/2.3522"
-        width="500"
-        height="180"
-        frameborder="0"
-        class="rounded-lg overflow-hidden block"
-        title="Paris by coordinates"
-      ></iframe>
-    </section>
-
-    <footer class="text-xs text-gray-600 border-t border-gray-800 pt-4">
-      Embed any route as an iframe. All query params (<code class="text-gray-400">units</code> and <code class="text-gray-400">date</code>) work inside iframes too.
-    </footer>
-
-  </div>
-</body>
+      <footer class="text-xs text-gray-600 border-t border-gray-800 pt-4">
+        Embed any route as an iframe. All query params (<code class="text-gray-400">units</code> and
+        <code class="text-gray-400">date</code>) work inside iframes too.
+      </footer>
+    </div>
+  </body>
 </html>
-

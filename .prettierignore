@@ -1,0 +1,7 @@
+node_modules/
+.vercel/
+.venv/
+.idea/
+public/css/style.css
+package-lock.json
+
