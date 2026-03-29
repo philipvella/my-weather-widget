@@ -140,9 +140,11 @@
       </section>
 
       <!-- Extra stats -->
+      <% const hideWeatherDetailsForMultiDay = Array.isArray(rangeItems) && rangeItems.length > 1;
+      %>
       <section
         aria-label="Weather details"
-        class="w-full max-w-3xl grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mt-1 text-center landscape:mt-0 landscape:flex landscape:flex-nowrap landscape:justify-end landscape:items-center landscape:gap-1 landscape:flex-[1.5]"
+        class="<%= hideWeatherDetailsForMultiDay ? 'hidden lg:grid w-full max-w-3xl lg:grid-cols-4 lg:gap-6 lg:mt-1 lg:text-center lg:landscape:mt-0 lg:landscape:flex lg:landscape:flex-nowrap lg:landscape:justify-end lg:landscape:items-center lg:landscape:gap-1 lg:landscape:flex-[1.5]' : 'w-full max-w-3xl grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mt-1 text-center landscape:mt-0 landscape:flex landscape:flex-nowrap landscape:justify-end landscape:items-center landscape:gap-1 landscape:flex-[1.5]' %>"
       >
         <div class="landscape:min-w-14">
           <p

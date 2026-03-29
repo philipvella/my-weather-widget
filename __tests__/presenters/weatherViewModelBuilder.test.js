@@ -142,4 +142,17 @@ describe('buildWeatherViewModel', () => {
     });
     expect(vm.rangeItems[2].isPlaceholder).toBe(false);
   });
+
+  it('caps future date CTA chips to a maximum of 3', () => {
+    const vm = buildWeatherViewModel(sampleData, 'metric', {
+      selectedRange: { from: '2030-04-01', to: '2030-04-06' },
+      rangeItems: null,
+      showRangePlaceholders: true,
+    });
+
+    expect(vm.rangeItems).toHaveLength(3);
+    expect(vm.rangeItems[0].date).toBe('2030-04-01');
+    expect(vm.rangeItems[2].date).toBe('2030-04-03');
+    expect(vm.rangeItems[0].focusQuery).toBe(null);
+  });
 });

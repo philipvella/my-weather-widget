@@ -96,13 +96,14 @@ function buildRangeItem({ date, entry, units, selectedRange, spanDays, isPlaceho
 function buildRangeItems(rangeItems, units, selectedRange, showRangePlaceholders) {
   const fromDate = parseIsoDate(selectedRange?.from);
   const toDate = parseIsoDate(selectedRange?.to);
-  const spanDays =
+  const requestedSpanDays =
     fromDate && toDate ? Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1 : null;
+  const spanDays = requestedSpanDays ? Math.min(requestedSpanDays, 3) : null;
 
   const hasRangeData = Array.isArray(rangeItems) && rangeItems.length > 0;
   const requestedDates =
     selectedRange?.from && selectedRange?.to
-      ? listDatesInRange(selectedRange.from, selectedRange.to)
+      ? listDatesInRange(selectedRange.from, selectedRange.to).slice(0, 3)
       : [];
 
   if (requestedDates.length > 0 && (hasRangeData || showRangePlaceholders)) {
